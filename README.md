@@ -40,6 +40,18 @@ Positioned as the **"UPI of Material Master Data"**, this platform delivers a so
 - Provides technical reviewers with transparent **Explainable AI (XAI)** justification tables and interactive **5-Axis Factor Radar Charts**.
 - Enforces an immutable, tamper-evident **SHA-256 Merkle Blockchain Ledger** to audit all adjudications and detect unauthorized ERP table drifts.
 
+### Stakeholder Alignment & Functional Routing
+The platform provides Role-Based Access Control (RBAC) dynamically routing each key stakeholder to a tailored operational dashboard:
+
+| Stakeholder | Primary Goal | Associated Module / Dashboard |
+| :--- | :--- | :--- |
+| **MoPNG / Government** | National standardization & procurement efficiency | **Registry Explorer View** (1:N National Catalog) |
+| **CPSE Management** | Clean, harmonized material masters | **Legacy OCR Inspector** (Blueprint / Legacy Data Harmonization) |
+| **Procurement Teams** | Faster & cheaper procurement | **Sourcing Simulator View** (Joint Tendering & Price Dispersion) |
+| **Engineering Experts** | Technically correct material equivalence | **Reviewer Portal View** (Technical Adjudication & Equivalency) |
+| **Inventory Teams** | Better stock visibility & optimization | **Duplicate Cluster View** (Inventory Deduplication & Safety Stock) |
+| **IT/SAP Teams** | Secure ERP integration & Data security | **Vigilance Dashboard View** (Live SAP Drift & Cryptographic Ledger) |
+
 ---
 
 ## 🤖 6-Agent Autonomous Architecture Pipeline

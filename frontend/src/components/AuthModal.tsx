@@ -14,44 +14,64 @@ import {
 
 export const DEMO_PROFILES: UserProfile[] = [
   {
-    id: 'USR-CPCL-01',
-    name: 'Er. R. Sundaram',
-    email: 'r.sundaram@cpcl.co.in',
+    id: 'USR-MOPNG-01',
+    name: 'Ministry Stakeholder',
+    email: 'admin@mopng.gov.in',
+    cpse: 'MoPNG',
+    plantLocation: 'Shastri Bhawan, New Delhi',
+    role: 'MOPNG_GOVERNMENT',
+    badgeId: 'GOV-MOPNG-001',
+    avatarColor: 'bg-indigo-600',
+  },
+  {
+    id: 'USR-CPSE-02',
+    name: 'CPSE Plant Manager',
+    email: 'manager@cpcl.co.in',
     cpse: 'CPCL',
     plantLocation: 'Manali Refinery, Chennai',
-    role: 'PLANT_ENGINEER',
-    badgeId: 'CPCL-TECH-4910',
+    role: 'CPSE_MANAGEMENT',
+    badgeId: 'CPCL-MGT-4910',
     avatarColor: 'bg-blue-600',
   },
   {
-    id: 'USR-IOCL-02',
-    name: 'Dr. Neha Verma',
-    email: 'verman@indianoil.in',
+    id: 'USR-PROC-03',
+    name: 'Joint Procurement Lead',
+    email: 'procurement@indianoil.in',
     cpse: 'IOCL',
-    plantLocation: 'Corporate Procurement, New Delhi',
-    role: 'PROCUREMENT_OFFICER',
+    plantLocation: 'Corporate Sourcing, Delhi',
+    role: 'PROCUREMENT_TEAM',
     badgeId: 'IOCL-SCM-8821',
     avatarColor: 'bg-emerald-600',
   },
   {
-    id: 'USR-MOPNG-03',
-    name: 'Shri Amitabh Kant (CVO)',
-    email: 'cvo-oversight@mopng.gov.in',
-    cpse: 'MoPNG',
-    plantLocation: 'Shastri Bhawan, New Delhi',
-    role: 'VIGILANCE_AUDITOR',
-    badgeId: 'GOI-CVO-0019',
+    id: 'USR-ENG-04',
+    name: 'Technical Expert',
+    email: 'engineer@ongc.co.in',
+    cpse: 'ONGC',
+    plantLocation: 'Western Offshore Basin',
+    role: 'ENGINEERING_EXPERT',
+    badgeId: 'ONGC-ENG-7712',
     avatarColor: 'bg-rose-600',
   },
   {
-    id: 'USR-ONGC-04',
-    name: 'Sanjay Deshmukh',
-    email: 'deshmukh_s@ongc.co.in',
-    cpse: 'ONGC',
-    plantLocation: 'Western Offshore Basin, Mumbai',
-    role: 'MASTER_DATA_ADMIN',
-    badgeId: 'ONGC-ERP-7712',
+    id: 'USR-INV-05',
+    name: 'Inventory Controller',
+    email: 'inventory@sail.co.in',
+    cpse: 'SAIL',
+    plantLocation: 'Bhilai Steel Plant',
+    role: 'INVENTORY_TEAM',
+    badgeId: 'SAIL-INV-3011',
     avatarColor: 'bg-amber-600',
+  },
+  {
+    id: 'USR-IT-06',
+    name: 'SAP Basis Admin',
+    email: 'it_audit@bpcl.in',
+    cpse: 'BPCL',
+    plantLocation: 'Mumbai Refinery',
+    role: 'IT_SAP_TEAM',
+    badgeId: 'BPCL-IT-9920',
+    avatarColor: 'bg-slate-700',
   },
 ];
 
@@ -69,7 +89,7 @@ export function AuthModal({ onLogin, onClose, isOpen }: AuthModalProps) {
     email: '',
     cpse: 'CPCL' as CPSEEntity,
     plantLocation: '',
-    role: 'PLANT_ENGINEER' as UserRole,
+    role: 'ENGINEERING_EXPERT' as UserRole,
     badgeId: '',
   });
 
@@ -88,13 +108,17 @@ export function AuthModal({ onLogin, onClose, isOpen }: AuthModalProps) {
       role: formData.role,
       badgeId: formData.badgeId || `${formData.cpse}-AUTH-${Math.floor(Math.random() * 9000 + 1000)}`,
       avatarColor:
-        formData.role === 'PLANT_ENGINEER'
+        formData.role === 'MOPNG_GOVERNMENT'
+          ? 'bg-indigo-600'
+          : formData.role === 'CPSE_MANAGEMENT'
           ? 'bg-blue-600'
-          : formData.role === 'PROCUREMENT_OFFICER'
+          : formData.role === 'PROCUREMENT_TEAM'
           ? 'bg-emerald-600'
-          : formData.role === 'VIGILANCE_AUDITOR'
+          : formData.role === 'ENGINEERING_EXPERT'
           ? 'bg-rose-600'
-          : 'bg-amber-600',
+          : formData.role === 'INVENTORY_TEAM'
+          ? 'bg-amber-600'
+          : 'bg-slate-700',
     };
 
     onLogin(newUser);
@@ -169,9 +193,12 @@ export function AuthModal({ onLogin, onClose, isOpen }: AuthModalProps) {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {DEMO_PROFILES.map((profile) => {
-                const isEng = profile.role === 'PLANT_ENGINEER';
-                const isProc = profile.role === 'PROCUREMENT_OFFICER';
-                const isVig = profile.role === 'VIGILANCE_AUDITOR';
+                const isMoPNG = profile.role === 'MOPNG_GOVERNMENT';
+                const isCPSE = profile.role === 'CPSE_MANAGEMENT';
+                const isProc = profile.role === 'PROCUREMENT_TEAM';
+                const isEng = profile.role === 'ENGINEERING_EXPERT';
+                const isInv = profile.role === 'INVENTORY_TEAM';
+                const isIT = profile.role === 'IT_SAP_TEAM';
 
                 return (
                   <button
@@ -181,13 +208,17 @@ export function AuthModal({ onLogin, onClose, isOpen }: AuthModalProps) {
                       if (onClose) onClose();
                     }}
                     className={`p-4 rounded-xl border text-left transition-all hover:shadow-md cursor-pointer flex flex-col justify-between gap-3 ${
-                      isEng
+                      isMoPNG
+                        ? 'bg-indigo-50/40 border-indigo-200 hover:border-indigo-500'
+                        : isCPSE
                         ? 'bg-blue-50/40 border-blue-200 hover:border-blue-500'
                         : isProc
                         ? 'bg-emerald-50/40 border-emerald-200 hover:border-emerald-500'
-                        : isVig
+                        : isEng
                         ? 'bg-rose-50/40 border-rose-200 hover:border-rose-500'
-                        : 'bg-amber-50/40 border-amber-200 hover:border-amber-500'
+                        : isInv
+                        ? 'bg-amber-50/40 border-amber-200 hover:border-amber-500'
+                        : 'bg-slate-50 border-slate-200 hover:border-slate-500'
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2">
@@ -210,13 +241,17 @@ export function AuthModal({ onLogin, onClose, isOpen }: AuthModalProps) {
                       </div>
                       <span
                         className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold uppercase ${
-                          isEng
+                          isMoPNG
+                            ? 'bg-indigo-100 text-indigo-800'
+                            : isCPSE
                             ? 'bg-blue-100 text-blue-800'
                             : isProc
                             ? 'bg-emerald-100 text-emerald-800'
-                            : isVig
+                            : isEng
                             ? 'bg-rose-100 text-rose-800'
-                            : 'bg-amber-100 text-amber-800'
+                            : isInv
+                            ? 'bg-amber-100 text-amber-800'
+                            : 'bg-slate-200 text-slate-800'
                         }`}
                       >
                         {profile.role.replace('_', ' ')}
@@ -225,8 +260,13 @@ export function AuthModal({ onLogin, onClose, isOpen }: AuthModalProps) {
 
                     <div className="text-[11px] text-slate-600 bg-white/80 p-2 rounded-lg border border-slate-200/60 space-y-0.5">
                       <div className="font-medium text-slate-800 truncate">📍 {profile.plantLocation}</div>
-                      <div className="text-slate-500 font-mono truncate text-[10px]">
-                        Primary Cockpit: {isEng ? 'Reviewer Adjudication Queue' : isProc ? 'Strategic Sourcing & PDI' : isVig ? 'Vigilance & Drift Ledger' : '1:N National Catalog'}
+                      <div className="text-slate-500 font-mono text-[10px]">
+                        {isMoPNG && 'National standardization & efficiency'}
+                        {isCPSE && 'Clean, harmonized material masters'}
+                        {isProc && 'Faster & cheaper procurement'}
+                        {isEng && 'Technically correct equivalence'}
+                        {isInv && 'Better stock visibility & optimization'}
+                        {isIT && 'Secure ERP integration'}
                       </div>
                     </div>
                   </button>
@@ -297,10 +337,12 @@ export function AuthModal({ onLogin, onClose, isOpen }: AuthModalProps) {
                   onChange={(e) => setFormData({ ...formData, role: e.target.value as UserRole })}
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs bg-white focus:ring-2 focus:ring-rose-500 focus:outline-none"
                 >
-                  <option value="PLANT_ENGINEER">Plant Materials Reviewer (Technical)</option>
-                  <option value="PROCUREMENT_OFFICER">Central Sourcing Director (Procurement)</option>
-                  <option value="VIGILANCE_AUDITOR">Chief Vigilance Officer / CAG Auditor</option>
-                  <option value="MASTER_DATA_ADMIN">Master Data &amp; ERP Admin</option>
+                  <option value="MOPNG_GOVERNMENT">MoPNG / Government</option>
+                  <option value="CPSE_MANAGEMENT">CPSE Management</option>
+                  <option value="PROCUREMENT_TEAM">Procurement Team</option>
+                  <option value="ENGINEERING_EXPERT">Engineering Expert</option>
+                  <option value="INVENTORY_TEAM">Inventory Team</option>
+                  <option value="IT_SAP_TEAM">IT / SAP Team</option>
                 </select>
               </div>
 

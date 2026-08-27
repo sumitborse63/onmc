@@ -69,14 +69,18 @@ export function App() {
   const handleLogin = (user: UserProfile) => {
     setCurrentUser(user);
     // Auto-route to primary operational cockpit based on persona
-    if (user.role === 'PLANT_ENGINEER') {
-      setActiveTab('REVIEWER');
-    } else if (user.role === 'PROCUREMENT_OFFICER') {
-      setActiveTab('SIMULATOR');
-    } else if (user.role === 'VIGILANCE_AUDITOR') {
-      setActiveTab('VIGILANCE');
-    } else if (user.role === 'MASTER_DATA_ADMIN') {
+    if (user.role === 'MOPNG_GOVERNMENT') {
       setActiveTab('REGISTRY');
+    } else if (user.role === 'CPSE_MANAGEMENT') {
+      setActiveTab('OCR');
+    } else if (user.role === 'PROCUREMENT_TEAM') {
+      setActiveTab('SIMULATOR');
+    } else if (user.role === 'ENGINEERING_EXPERT') {
+      setActiveTab('REVIEWER');
+    } else if (user.role === 'INVENTORY_TEAM') {
+      setActiveTab('DUPLICATES');
+    } else if (user.role === 'IT_SAP_TEAM') {
+      setActiveTab('VIGILANCE');
     }
   };
 
@@ -213,10 +217,12 @@ export function App() {
         <div className="flex items-center gap-2">
           <span className="text-slate-400">Operational Remit:</span>
           <span className="bg-slate-800 text-sky-300 px-2 py-0.5 rounded-md border border-slate-700">
-            {currentUser.role === 'PLANT_ENGINEER' && 'Technical Adjudication & Blueprint Verification'}
-            {currentUser.role === 'PROCUREMENT_OFFICER' && 'Joint Demand Sourcing & Price Dispersion (PDI)'}
-            {currentUser.role === 'VIGILANCE_AUDITOR' && 'Real-Time SAP Table Drift & Cryptographic Merkle Ledger'}
-            {currentUser.role === 'MASTER_DATA_ADMIN' && '1:N National Catalog Management & ERP Mass Export'}
+            {currentUser.role === 'MOPNG_GOVERNMENT' && 'National standardization & procurement efficiency'}
+            {currentUser.role === 'CPSE_MANAGEMENT' && 'Clean, harmonized material masters'}
+            {currentUser.role === 'PROCUREMENT_TEAM' && 'Faster & cheaper procurement'}
+            {currentUser.role === 'ENGINEERING_EXPERT' && 'Technically correct material equivalence'}
+            {currentUser.role === 'INVENTORY_TEAM' && 'Better stock visibility & optimization'}
+            {currentUser.role === 'IT_SAP_TEAM' && 'Secure ERP integration'}
           </span>
         </div>
       </div>
@@ -235,7 +241,7 @@ export function App() {
           >
             <CheckSquare className="w-4 h-4" />
             <span>[1] Reviewer Portal</span>
-            {currentUser.role === 'PLANT_ENGINEER' && (
+            {currentUser.role === 'ENGINEERING_EXPERT' && (
               <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
                 PRIMARY
               </span>
@@ -263,7 +269,7 @@ export function App() {
           >
             <Layers className="w-4 h-4" />
             <span>[2] National Registry (1:N Explorer)</span>
-            {currentUser.role === 'MASTER_DATA_ADMIN' && (
+            {currentUser.role === 'MOPNG_GOVERNMENT' && (
               <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
                 PRIMARY
               </span>
@@ -280,6 +286,11 @@ export function App() {
           >
             <Copy className="w-4 h-4 text-rose-500" />
             <span>[3] Duplicate &amp; Cluster Analytics</span>
+            {currentUser.role === 'INVENTORY_TEAM' && (
+              <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
+                PRIMARY
+              </span>
+            )}
           </button>
 
           <button
@@ -292,7 +303,7 @@ export function App() {
           >
             <TrendingUp className="w-4 h-4" />
             <span>[4] Strategic Sourcing Simulator</span>
-            {currentUser.role === 'PROCUREMENT_OFFICER' && (
+            {currentUser.role === 'PROCUREMENT_TEAM' && (
               <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
                 PRIMARY
               </span>
@@ -309,6 +320,11 @@ export function App() {
           >
             <FileText className="w-4 h-4" />
             <span>[5] Legacy OCR Inspector (Agent 2)</span>
+            {currentUser.role === 'CPSE_MANAGEMENT' && (
+              <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
+                PRIMARY
+              </span>
+            )}
           </button>
 
           <button
@@ -321,7 +337,7 @@ export function App() {
           >
             <ShieldAlert className="w-4 h-4 text-rose-500" />
             <span>[6] Vigilance &amp; Drift Monitor (Agent 5)</span>
-            {currentUser.role === 'VIGILANCE_AUDITOR' && (
+            {currentUser.role === 'IT_SAP_TEAM' && (
               <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
                 PRIMARY
               </span>

@@ -1,10 +1,12 @@
 export type CPSEEntity = 'CPCL' | 'IOCL' | 'ONGC' | 'BPCL' | 'HPCL' | 'SAIL' | 'NTPC' | 'MoPNG' | 'CVO_AUDIT';
 
 export type UserRole =
-  | 'PLANT_ENGINEER'       // CPSE Plant Material Reviewer / Technical Engineer
-  | 'PROCUREMENT_OFFICER'  // Central Sourcing Director / Joint Procurement Lead
-  | 'VIGILANCE_AUDITOR'    // Chief Vigilance Officer / CAG Compliance Auditor
-  | 'MASTER_DATA_ADMIN';   // Enterprise SAP MM Master Data Administrator
+  | 'MOPNG_GOVERNMENT'
+  | 'CPSE_MANAGEMENT'
+  | 'PROCUREMENT_TEAM'
+  | 'ENGINEERING_EXPERT'
+  | 'INVENTORY_TEAM'
+  | 'IT_SAP_TEAM';
 
 export interface UserProfile {
   id: string;
