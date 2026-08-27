@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FileText, CheckCircle2, AlertTriangle, SpellCheck, ArrowRight, Scan, Play, RefreshCw } from 'lucide-react';
+import { runOCRSpellcheck } from '../services/api';
 
 export function LegacyOCRInspectorView() {
   const [inputText, setInputText] = useState('BALL VALVE 2" 15O# WCB_B0DY SS3I6 BALL & STEM FLANGED ASME B16.34');
@@ -28,13 +29,8 @@ export function LegacyOCRInspectorView() {
   const handleRunRealOCR = async () => {
     setIsProcessing(true);
     try {
-      const res = await fetch('http://localhost:8000/api/agent2/ocr-spellcheck', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rawText: inputText }),
-      });
-      if (res.ok) {
-        const data = await res.json();
+      const data = await runOCRSpellcheck(inputText);
+      if (data) {
         setOcrResult(data);
         setStatusMessage('Real-time Agent 2 OCR Pipeline & Dictionary Disambiguation Completed Successfully');
         setTimeout(() => setStatusMessage(null), 3500);

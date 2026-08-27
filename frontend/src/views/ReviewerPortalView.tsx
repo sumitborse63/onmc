@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import type { AdjudicationCandidate } from '../types';
 import { FactorRadarChart } from '../components/FactorRadarChart';
 import { XAIDiffTable } from '../components/XAIDiffTable';
+import { runLiveMatchEvaluation } from '../services/api';
 import {
   Check,
   X,
@@ -98,16 +99,11 @@ export function ReviewerPortalView({ queue, onApprove, onReject }: ReviewerPorta
     if (!customDesc.trim()) return;
     setIsSandboxEvaluating(true);
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/agent1/evaluate-match', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          localDescription: customDesc,
-          masterNationalCode: currentItem?.candidateMaster?.nationalCode || 'CNM-1',
-        }),
-      });
-      if (res.ok) {
-        const data = await res.json();
+      const data = await runLiveMatchEvaluation(
+        customDesc,
+        currentItem?.candidateMaster?.nationalCode || 'CNM-1'
+      );
+      if (data) {
         setSandboxResult(data);
       }
     } catch (err) {

@@ -254,7 +254,7 @@ export function AuthModal({ onLogin, onClose, isOpen }: AuthModalProps) {
                             : 'bg-slate-200 text-slate-800'
                         }`}
                       >
-                        {profile.role.replace('_', ' ')}
+                        {profile.role.replace(/_/g, ' ')}
                       </span>
                     </div>
 

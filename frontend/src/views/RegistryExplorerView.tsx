@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   X,
 } from 'lucide-react';
+import { uploadCSV, getExportCSVUrl } from '../services/api';
 
 interface RegistryExplorerProps {
   masters: NationalMaterialMaster[];
@@ -49,7 +50,7 @@ export function RegistryExplorerView({ masters, records }: RegistryExplorerProps
   }, [records, selectedMaster]);
 
   const handleExportCSV = () => {
-    window.open('http://127.0.0.1:8000/api/data/export-mapped-csv', '_blank');
+    window.open(getExportCSVUrl(), '_blank');
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,16 +58,9 @@ export function RegistryExplorerView({ masters, records }: RegistryExplorerProps
     if (!file) return;
 
     setIsUploading(true);
-    const formData = new FormData();
-    formData.append('file', file);
-
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/data/upload-csv', {
-        method: 'POST',
-        body: formData,
-      });
-      if (res.ok) {
-        const data = await res.json();
+      const data = await uploadCSV(file);
+      if (data) {
         setUploadStatus(`Successfully Ingested ${data.importedCount} Material Records! Assigned Common National Codes & Synced to Ledger.`);
         setTimeout(() => {
           setUploadStatus(null);

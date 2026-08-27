@@ -99,3 +99,70 @@ export async function revertDriftAlert(alertId: string) {
     return null;
   }
 }
+
+export async function fetchDriftAlerts() {
+  try {
+    const res = await fetch(`${API_BASE}/agent5/drift-alerts`);
+    if (!res.ok) throw new Error('Failed to fetch drift alerts');
+    return await res.json();
+  } catch (err) {
+    return null;
+  }
+}
+
+export async function fetchDuplicateClusters() {
+  try {
+    const res = await fetch(`${API_BASE}/data/duplicates`);
+    if (!res.ok) throw new Error('Failed to fetch duplicates');
+    return await res.json();
+  } catch (err) {
+    return null;
+  }
+}
+
+export async function runOCRSpellcheck(rawText: string) {
+  try {
+    const res = await fetch(`${API_BASE}/agent2/ocr-spellcheck`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rawText }),
+    });
+    if (!res.ok) throw new Error('OCR failed');
+    return await res.json();
+  } catch (err) {
+    return null;
+  }
+}
+
+export async function runLiveMatchEvaluation(localDescription: string, masterNationalCode: string) {
+  try {
+    const res = await fetch(`${API_BASE}/agent1/evaluate-match`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ localDescription, masterNationalCode }),
+    });
+    if (!res.ok) throw new Error('Match evaluation failed');
+    return await res.json();
+  } catch (err) {
+    return null;
+  }
+}
+
+export async function uploadCSV(file: File) {
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await fetch(`${API_BASE}/data/upload-csv`, {
+      method: 'POST',
+      body: formData,
+    });
+    if (!res.ok) throw new Error('Upload failed');
+    return await res.json();
+  } catch (err) {
+    return null;
+  }
+}
+
+export function getExportCSVUrl() {
+  return `${API_BASE}/data/export-mapped-csv`;
+}

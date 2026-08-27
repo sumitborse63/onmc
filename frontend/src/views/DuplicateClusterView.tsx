@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Copy, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { fetchDuplicateClusters } from '../services/api';
 
 interface DuplicateItem {
   cpse: string;
@@ -30,9 +31,8 @@ export function DuplicateClusterView() {
   useEffect(() => {
     async function loadClusters() {
       try {
-        const res = await fetch('http://127.0.0.1:8000/api/data/duplicates');
-        if (res.ok) {
-          const data = await res.json();
+        const data = await fetchDuplicateClusters();
+        if (data && Array.isArray(data)) {
           setClusters(data);
           if (data.length > 0) setSelectedCluster(data[0]);
         }

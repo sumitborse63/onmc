@@ -31,9 +31,9 @@ import {
 type ActiveTab = 'REVIEWER' | 'REGISTRY' | 'DUPLICATES' | 'SIMULATOR' | 'OCR' | 'VIGILANCE';
 
 export function App() {
-  const [currentUser, setCurrentUser] = useState<UserProfile>(DEMO_PROFILES[0]);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<ActiveTab>('REVIEWER');
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(true);
+  const [activeTab, setActiveTab] = useState<ActiveTab>('REGISTRY');
   const [queue, setQueue] = useState<AdjudicationCandidate[]>([]);
   const [masters, setMasters] = useState<NationalMaterialMaster[]>([]);
   const [records, setRecords] = useState<MaterialRecord[]>([]);
@@ -68,6 +68,7 @@ export function App() {
 
   const handleLogin = (user: UserProfile) => {
     setCurrentUser(user);
+    setIsAuthModalOpen(false);
     // Auto-route to primary operational cockpit based on persona
     if (user.role === 'MOPNG_GOVERNMENT') {
       setActiveTab('REGISTRY');
@@ -82,6 +83,12 @@ export function App() {
     } else if (user.role === 'IT_SAP_TEAM') {
       setActiveTab('VIGILANCE');
     }
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setIsAuthModalOpen(true);
+    setActiveTab('REGISTRY');
   };
 
   const handleApproveCandidate = async (item: AdjudicationCandidate) => {
@@ -154,9 +161,11 @@ export function App() {
             <div>
               <div className="font-bold text-sm text-white flex items-center gap-2 font-sans tracking-tight">
                 National Unified Material Master Platform
-                <span className="text-[10px] font-mono bg-rose-950 text-rose-300 border border-rose-800 px-2 py-0.5 rounded-full font-semibold">
-                  {currentUser.cpse} Pilot
-                </span>
+                {currentUser && (
+                  <span className="text-[10px] font-mono bg-rose-950 text-rose-300 border border-rose-800 px-2 py-0.5 rounded-full font-semibold">
+                    {currentUser.cpse} Pilot
+                  </span>
+                )}
                 {backendConnected ? (
                   <span className="text-[10px] font-mono bg-emerald-950 text-emerald-300 border border-emerald-800 px-2 py-0.5 rounded-full font-semibold flex items-center gap-1">
                     <Activity className="w-3 h-3" /> FASTAPI LIVE
@@ -174,176 +183,188 @@ export function App() {
           </div>
 
           {/* User Persona & Role-Based Quick Switcher Button */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setIsAuthModalOpen(true)}
-              className="flex items-center gap-2.5 bg-slate-800 hover:bg-slate-750 border border-slate-700/80 px-3 py-1.5 rounded-xl text-left transition-all cursor-pointer shadow-xs group"
-              title="Click to switch persona or register new CPSE user"
-            >
-              <div
-                className={`w-7 h-7 rounded-lg ${currentUser.avatarColor} text-white flex items-center justify-center font-bold text-xs shadow-2xs`}
+          {currentUser && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsAuthModalOpen(true)}
+                className="flex items-center gap-2.5 bg-slate-800 hover:bg-slate-750 border border-slate-700/80 px-3 py-1.5 rounded-xl text-left transition-all cursor-pointer shadow-xs group"
+                title="Click to switch persona or register new CPSE user"
               >
-                {currentUser.name
-                  .split(' ')
-                  .map((n) => n[0])
-                  .join('')
-                  .slice(0, 2)}
-              </div>
-              <div className="hidden sm:block">
-                <div className="font-bold text-[11px] text-slate-100 flex items-center gap-1.5">
-                  <span>{currentUser.name}</span>
-                  <span className="text-[9px] font-mono px-1.5 py-0.2 rounded-md bg-slate-700 text-slate-300 uppercase font-semibold">
-                    {currentUser.cpse}
-                  </span>
+                <div
+                  className={`w-7 h-7 rounded-lg ${currentUser.avatarColor} text-white flex items-center justify-center font-bold text-xs shadow-2xs`}
+                >
+                  {currentUser.name
+                    .split(' ')
+                    .map((n) => n[0])
+                    .join('')
+                    .slice(0, 2)}
                 </div>
-                <div className="text-[10px] text-slate-400 font-mono truncate max-w-[180px]">
-                  {currentUser.role.replace('_', ' ')}
+                <div className="hidden sm:block">
+                  <div className="font-bold text-[11px] text-slate-100 flex items-center gap-1.5">
+                    <span>{currentUser.name}</span>
+                    <span className="text-[9px] font-mono px-1.5 py-0.2 rounded-md bg-slate-700 text-slate-300 uppercase font-semibold">
+                      {currentUser.cpse}
+                    </span>
+                  </div>
+                  <div className="text-[10px] text-slate-400 font-mono truncate max-w-[180px]">
+                    {currentUser.role.replace(/_/g, ' ')}
+                  </div>
                 </div>
-              </div>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-white transition-colors" />
-            </button>
-          </div>
+                <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-white transition-colors" />
+              </button>
+              <button
+                onClick={handleLogout}
+                className="text-[10px] font-mono text-slate-400 hover:text-rose-400 bg-slate-800 hover:bg-slate-750 border border-slate-700/80 px-2.5 py-1.5 rounded-lg transition-all cursor-pointer"
+              >
+                Sign Out
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
       {/* Role-Specific Alert Banner */}
-      <div className="bg-slate-850 border-b border-slate-800 px-4 sm:px-6 lg:px-8 py-1.5 text-[11px] font-mono text-slate-300 flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span>
-            Active Enterprise Stakeholder: <strong className="text-white">{currentUser.name}</strong> ({currentUser.cpse} — {currentUser.plantLocation})
-          </span>
+      {currentUser && (
+        <div className="bg-slate-850 border-b border-slate-800 px-4 sm:px-6 lg:px-8 py-1.5 text-[11px] font-mono text-slate-300 flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <span>
+              Active Enterprise Stakeholder: <strong className="text-white">{currentUser.name}</strong> ({currentUser.cpse} — {currentUser.plantLocation})
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-slate-400">Operational Remit:</span>
+            <span className="bg-slate-800 text-sky-300 px-2 py-0.5 rounded-md border border-slate-700">
+              {currentUser.role === 'MOPNG_GOVERNMENT' && 'National standardization & procurement efficiency'}
+              {currentUser.role === 'CPSE_MANAGEMENT' && 'Clean, harmonized material masters'}
+              {currentUser.role === 'PROCUREMENT_TEAM' && 'Faster & cheaper procurement'}
+              {currentUser.role === 'ENGINEERING_EXPERT' && 'Technically correct material equivalence'}
+              {currentUser.role === 'INVENTORY_TEAM' && 'Better stock visibility & optimization'}
+              {currentUser.role === 'IT_SAP_TEAM' && 'Secure ERP integration'}
+            </span>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-slate-400">Operational Remit:</span>
-          <span className="bg-slate-800 text-sky-300 px-2 py-0.5 rounded-md border border-slate-700">
-            {currentUser.role === 'MOPNG_GOVERNMENT' && 'National standardization & procurement efficiency'}
-            {currentUser.role === 'CPSE_MANAGEMENT' && 'Clean, harmonized material masters'}
-            {currentUser.role === 'PROCUREMENT_TEAM' && 'Faster & cheaper procurement'}
-            {currentUser.role === 'ENGINEERING_EXPERT' && 'Technically correct material equivalence'}
-            {currentUser.role === 'INVENTORY_TEAM' && 'Better stock visibility & optimization'}
-            {currentUser.role === 'IT_SAP_TEAM' && 'Secure ERP integration'}
-          </span>
-        </div>
-      </div>
+      )}
 
       {/* Main Container - Full Bleed Width */}
       <main className="w-full px-4 sm:px-6 lg:px-8 py-4 flex-1 flex flex-col space-y-4">
         {/* Navigation Tabs (Full Width Segmented Bar with Role Badges) */}
-        <nav className="flex flex-wrap gap-2 bg-white border border-slate-200 p-1.5 rounded-xl shadow-xs text-xs font-semibold w-full">
-          <button
-            onClick={() => setActiveTab('REVIEWER')}
-            className={`px-3.5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
-              activeTab === 'REVIEWER'
-                ? 'bg-rose-600 text-white shadow-xs'
-                : 'text-slate-700 hover:bg-slate-100/80'
-            }`}
-          >
-            <CheckSquare className="w-4 h-4" />
-            <span>[1] Reviewer Portal</span>
-            {currentUser.role === 'ENGINEERING_EXPERT' && (
-              <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
-                PRIMARY
-              </span>
-            )}
-            {queue.length > 0 && (
-              <span
-                className={`ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold ${
-                  activeTab === 'REVIEWER'
-                    ? 'bg-white text-rose-600'
-                    : 'bg-rose-100 text-rose-700'
-                }`}
-              >
-                {queue.length}
-              </span>
-            )}
-          </button>
+        {currentUser && (
+          <nav className="flex flex-wrap gap-2 bg-white border border-slate-200 p-1.5 rounded-xl shadow-xs text-xs font-semibold w-full">
+            <button
+              onClick={() => setActiveTab('REVIEWER')}
+              className={`px-3.5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
+                activeTab === 'REVIEWER'
+                  ? 'bg-rose-600 text-white shadow-xs'
+                  : 'text-slate-700 hover:bg-slate-100/80'
+              }`}
+            >
+              <CheckSquare className="w-4 h-4" />
+              <span>[1] Reviewer Portal</span>
+              {currentUser.role === 'ENGINEERING_EXPERT' && (
+                <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
+                  PRIMARY
+                </span>
+              )}
+              {queue.length > 0 && (
+                <span
+                  className={`ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold ${
+                    activeTab === 'REVIEWER'
+                      ? 'bg-white text-rose-600'
+                      : 'bg-rose-100 text-rose-700'
+                  }`}
+                >
+                  {queue.length}
+                </span>
+              )}
+            </button>
 
-          <button
-            onClick={() => setActiveTab('REGISTRY')}
-            className={`px-3.5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
-              activeTab === 'REGISTRY'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-700 hover:bg-slate-100/80'
-            }`}
-          >
-            <Layers className="w-4 h-4" />
-            <span>[2] National Registry (1:N Explorer)</span>
-            {currentUser.role === 'MOPNG_GOVERNMENT' && (
-              <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
-                PRIMARY
-              </span>
-            )}
-          </button>
+            <button
+              onClick={() => setActiveTab('REGISTRY')}
+              className={`px-3.5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
+                activeTab === 'REGISTRY'
+                  ? 'bg-slate-900 text-white shadow-xs'
+                  : 'text-slate-700 hover:bg-slate-100/80'
+              }`}
+            >
+              <Layers className="w-4 h-4" />
+              <span>[2] National Registry (1:N Explorer)</span>
+              {currentUser.role === 'MOPNG_GOVERNMENT' && (
+                <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
+                  PRIMARY
+                </span>
+              )}
+            </button>
 
-          <button
-            onClick={() => setActiveTab('DUPLICATES')}
-            className={`px-3.5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
-              activeTab === 'DUPLICATES'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-700 hover:bg-slate-100/80'
-            }`}
-          >
-            <Copy className="w-4 h-4 text-rose-500" />
-            <span>[3] Duplicate &amp; Cluster Analytics</span>
-            {currentUser.role === 'INVENTORY_TEAM' && (
-              <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
-                PRIMARY
-              </span>
-            )}
-          </button>
+            <button
+              onClick={() => setActiveTab('DUPLICATES')}
+              className={`px-3.5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
+                activeTab === 'DUPLICATES'
+                  ? 'bg-slate-900 text-white shadow-xs'
+                  : 'text-slate-700 hover:bg-slate-100/80'
+              }`}
+            >
+              <Copy className="w-4 h-4 text-rose-500" />
+              <span>[3] Duplicate &amp; Cluster Analytics</span>
+              {currentUser.role === 'INVENTORY_TEAM' && (
+                <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
+                  PRIMARY
+                </span>
+              )}
+            </button>
 
-          <button
-            onClick={() => setActiveTab('SIMULATOR')}
-            className={`px-3.5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
-              activeTab === 'SIMULATOR'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-700 hover:bg-slate-100/80'
-            }`}
-          >
-            <TrendingUp className="w-4 h-4" />
-            <span>[4] Strategic Sourcing Simulator</span>
-            {currentUser.role === 'PROCUREMENT_TEAM' && (
-              <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
-                PRIMARY
-              </span>
-            )}
-          </button>
+            <button
+              onClick={() => setActiveTab('SIMULATOR')}
+              className={`px-3.5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
+                activeTab === 'SIMULATOR'
+                  ? 'bg-slate-900 text-white shadow-xs'
+                  : 'text-slate-700 hover:bg-slate-100/80'
+              }`}
+            >
+              <TrendingUp className="w-4 h-4" />
+              <span>[4] Strategic Sourcing Simulator</span>
+              {currentUser.role === 'PROCUREMENT_TEAM' && (
+                <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
+                  PRIMARY
+                </span>
+              )}
+            </button>
 
-          <button
-            onClick={() => setActiveTab('OCR')}
-            className={`px-3.5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
-              activeTab === 'OCR'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-700 hover:bg-slate-100/80'
-            }`}
-          >
-            <FileText className="w-4 h-4" />
-            <span>[5] Legacy OCR Inspector (Agent 2)</span>
-            {currentUser.role === 'CPSE_MANAGEMENT' && (
-              <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
-                PRIMARY
-              </span>
-            )}
-          </button>
+            <button
+              onClick={() => setActiveTab('OCR')}
+              className={`px-3.5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
+                activeTab === 'OCR'
+                  ? 'bg-slate-900 text-white shadow-xs'
+                  : 'text-slate-700 hover:bg-slate-100/80'
+              }`}
+            >
+              <FileText className="w-4 h-4" />
+              <span>[5] Legacy OCR Inspector (Agent 2)</span>
+              {currentUser.role === 'CPSE_MANAGEMENT' && (
+                <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
+                  PRIMARY
+                </span>
+              )}
+            </button>
 
-          <button
-            onClick={() => setActiveTab('VIGILANCE')}
-            className={`px-3.5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
-              activeTab === 'VIGILANCE'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-700 hover:bg-slate-100/80'
-            }`}
-          >
-            <ShieldAlert className="w-4 h-4 text-rose-500" />
-            <span>[6] Vigilance &amp; Drift Monitor (Agent 5)</span>
-            {currentUser.role === 'IT_SAP_TEAM' && (
-              <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
-                PRIMARY
-              </span>
-            )}
-          </button>
-        </nav>
+            <button
+              onClick={() => setActiveTab('VIGILANCE')}
+              className={`px-3.5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
+                activeTab === 'VIGILANCE'
+                  ? 'bg-slate-900 text-white shadow-xs'
+                  : 'text-slate-700 hover:bg-slate-100/80'
+              }`}
+            >
+              <ShieldAlert className="w-4 h-4 text-rose-500" />
+              <span>[6] Vigilance &amp; Drift Monitor (Agent 5)</span>
+              {currentUser.role === 'IT_SAP_TEAM' && (
+                <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
+                  PRIMARY
+                </span>
+              )}
+            </button>
+          </nav>
+        )}
 
         {/* View Routing */}
         <section className="flex-1 w-full">
@@ -397,7 +418,7 @@ export function App() {
         isOpen={isAuthModalOpen}
         currentUser={currentUser}
         onLogin={handleLogin}
-        onClose={() => setIsAuthModalOpen(false)}
+        onClose={currentUser ? () => setIsAuthModalOpen(false) : undefined}
       />
     </div>
   );

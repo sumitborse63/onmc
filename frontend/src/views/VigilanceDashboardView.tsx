@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { DriftAlertItem, AuditLedgerBlock } from '../types';
-import { fetchLedgerBlocks, revertDriftAlert } from '../services/api';
+import { fetchLedgerBlocks, revertDriftAlert, fetchDriftAlerts } from '../services/api';
 import { ShieldAlert, ShieldCheck, AlertOctagon, RotateCcw, Link2, CheckCircle, PlusCircle, RefreshCw } from 'lucide-react';
 
 export function VigilanceDashboardView() {
@@ -16,7 +16,7 @@ export function VigilanceDashboardView() {
       try {
         const [ledgerRes, alertsRes] = await Promise.all([
           fetchLedgerBlocks(),
-          fetch('http://127.0.0.1:8000/api/agent5/drift-alerts').then(r => r.json()),
+          fetchDriftAlerts(),
         ]);
         if (ledgerRes && ledgerRes.ledgerBlocks) {
           setLedger(ledgerRes.ledgerBlocks);
