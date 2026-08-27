@@ -366,37 +366,48 @@ export function App() {
           </nav>
         )}
 
-        {/* View Routing */}
-        <section className="flex-1 w-full">
-          {isLoading ? (
-            <div className="p-16 text-center bg-white border border-slate-200 rounded-2xl shadow-xs my-6 font-mono text-xs text-slate-500 flex flex-col items-center justify-center gap-3">
-              <RefreshCw className="w-6 h-6 animate-spin text-rose-600" />
-              <span>Ingesting Live Material Master Records from FastAPI Engine...</span>
-            </div>
-          ) : (
-            <>
-              {activeTab === 'REVIEWER' && (
-                <ReviewerPortalView
-                  queue={queue}
-                  onApprove={handleApproveCandidate}
-                  onReject={handleRejectCandidate}
-                />
-              )}
+        {/* Main Content Area: Sovereign Gateway when logged out, Dashboard when logged in */}
+        {!currentUser ? (
+          <section className="flex-1 w-full py-2">
+            <AuthModal
+              isOpen={true}
+              isLandingMode={true}
+              currentUser={null}
+              onLogin={handleLogin}
+            />
+          </section>
+        ) : (
+          <section className="flex-1 w-full">
+            {isLoading ? (
+              <div className="p-16 text-center bg-white border border-slate-200 rounded-2xl shadow-xs my-6 font-mono text-xs text-slate-500 flex flex-col items-center justify-center gap-3">
+                <RefreshCw className="w-6 h-6 animate-spin text-rose-600" />
+                <span>Ingesting Live Material Master Records from FastAPI Engine...</span>
+              </div>
+            ) : (
+              <>
+                {activeTab === 'REVIEWER' && (
+                  <ReviewerPortalView
+                    queue={queue}
+                    onApprove={handleApproveCandidate}
+                    onReject={handleRejectCandidate}
+                  />
+                )}
 
-              {activeTab === 'REGISTRY' && (
-                <RegistryExplorerView masters={masters} records={records} />
-              )}
+                {activeTab === 'REGISTRY' && (
+                  <RegistryExplorerView masters={masters} records={records} />
+                )}
 
-              {activeTab === 'DUPLICATES' && <DuplicateClusterView />}
+                {activeTab === 'DUPLICATES' && <DuplicateClusterView />}
 
-              {activeTab === 'SIMULATOR' && <SourcingSimulatorView />}
+                {activeTab === 'SIMULATOR' && <SourcingSimulatorView />}
 
-              {activeTab === 'OCR' && <LegacyOCRInspectorView />}
+                {activeTab === 'OCR' && <LegacyOCRInspectorView />}
 
-              {activeTab === 'VIGILANCE' && <VigilanceDashboardView />}
-            </>
-          )}
-        </section>
+                {activeTab === 'VIGILANCE' && <VigilanceDashboardView />}
+              </>
+            )}
+          </section>
+        )}
       </main>
 
       {/* Footer Telemetry (Full Width) */}
@@ -413,13 +424,16 @@ export function App() {
         </div>
       </footer>
 
-      {/* Enterprise Authentication & Persona Switcher Modal */}
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        currentUser={currentUser}
-        onLogin={handleLogin}
-        onClose={currentUser ? () => setIsAuthModalOpen(false) : undefined}
-      />
+      {/* Persona Switcher Modal (Overlay Mode when logged in) */}
+      {currentUser && isAuthModalOpen && (
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          isLandingMode={false}
+          currentUser={currentUser}
+          onLogin={handleLogin}
+          onClose={() => setIsAuthModalOpen(false)}
+        />
+      )}
     </div>
   );
 }
