@@ -1,8 +1,13 @@
 import { useState } from 'react';
-import { FileText, CheckCircle2, AlertTriangle, SpellCheck, ArrowRight, Scan, Play, RefreshCw } from 'lucide-react';
+import type { UserProfile } from '../types';
+import { FileText, CheckCircle2, AlertTriangle, SpellCheck, ArrowRight, Scan, Play, RefreshCw, Factory, UploadCloud } from 'lucide-react';
 import { runOCRSpellcheck } from '../services/api';
 
-export function LegacyOCRInspectorView() {
+interface LegacyOCRInspectorProps {
+  currentUser?: UserProfile | null;
+}
+
+export function LegacyOCRInspectorView({ currentUser }: LegacyOCRInspectorProps) {
   const [inputText, setInputText] = useState('BALL VALVE 2" 15O# WCB_B0DY SS3I6 BALL & STEM FLANGED ASME B16.34');
   const [isProcessing, setIsProcessing] = useState(false);
   const [ocrResult, setOcrResult] = useState<any>({
@@ -47,13 +52,24 @@ export function LegacyOCRInspectorView() {
       {/* Header */}
       <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center border border-amber-100">
-            <FileText className="w-4 h-4" />
+          <div className="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center border border-blue-100">
+            <Factory className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-sm font-bold text-slate-900">
-              Legacy Document Migration & Blueprint OCR Pipeline (Agent 2)
-            </h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-bold text-slate-900">
+                Legacy Document Migration &amp; Blueprint OCR Pipeline (Agent 2)
+              </h2>
+              {currentUser && (
+                <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-md border ${
+                  currentUser.role === 'CPSE_MANAGEMENT'
+                    ? 'bg-blue-50 text-blue-700 border-blue-200'
+                    : 'bg-slate-100 text-slate-700 border-slate-200'
+                }`}>
+                  {currentUser.role === 'CPSE_MANAGEMENT' ? `${currentUser.cpse} PLANT DIGITIZER ACTIVE` : 'OCR INSPECTOR'}
+                </span>
+              )}
+            </div>
             <p className="text-xs text-slate-500">
               Interactive Multimodal LayoutLMv3 + Industrial Lexicon Disambiguation Sandbox
             </p>

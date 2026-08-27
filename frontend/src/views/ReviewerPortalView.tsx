@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { AdjudicationCandidate } from '../types';
+import type { AdjudicationCandidate, UserProfile } from '../types';
 import { FactorRadarChart } from '../components/FactorRadarChart';
 import { XAIDiffTable } from '../components/XAIDiffTable';
 import { runLiveMatchEvaluation } from '../services/api';
@@ -16,15 +16,18 @@ import {
   Zap,
   Play,
   Search,
+  HardHat,
+  Award,
 } from 'lucide-react';
 
 interface ReviewerPortalProps {
   queue: AdjudicationCandidate[];
   onApprove: (item: AdjudicationCandidate) => void;
   onReject: (item: AdjudicationCandidate) => void;
+  currentUser?: UserProfile | null;
 }
 
-export function ReviewerPortalView({ queue, onApprove, onReject }: ReviewerPortalProps) {
+export function ReviewerPortalView({ queue, onApprove, onReject, currentUser }: ReviewerPortalProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
@@ -143,6 +146,16 @@ export function ReviewerPortalView({ queue, onApprove, onReject }: ReviewerPorta
             <strong className="text-slate-900">{queue.length}</strong>
           </span>
           <span className="text-xs font-mono text-slate-400">| ID: {currentItem.id}</span>
+          {currentUser && (
+            <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-md flex items-center gap-1 border ${
+              currentUser.role === 'ENGINEERING_EXPERT'
+                ? 'bg-rose-50 text-rose-700 border-rose-200'
+                : 'bg-slate-100 text-slate-700 border-slate-200'
+            }`}>
+              <HardHat className="w-3 h-3" />
+              {currentUser.role === 'ENGINEERING_EXPERT' ? 'SIGN-OFF CLEARANCE: LEVEL 3 AUTHORIZED' : 'VIEW-ONLY ADVISORY MODE'}
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-3">

@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
-import type { DriftAlertItem, AuditLedgerBlock } from '../types';
+import type { DriftAlertItem, AuditLedgerBlock, UserProfile } from '../types';
 import { fetchLedgerBlocks, revertDriftAlert, fetchDriftAlerts } from '../services/api';
-import { ShieldAlert, ShieldCheck, AlertOctagon, RotateCcw, Link2, CheckCircle, PlusCircle, RefreshCw } from 'lucide-react';
+import { ShieldAlert, ShieldCheck, AlertOctagon, RotateCcw, Link2, CheckCircle, PlusCircle, RefreshCw, Terminal } from 'lucide-react';
 
-export function VigilanceDashboardView() {
+interface VigilanceDashboardProps {
+  currentUser?: UserProfile | null;
+}
+
+export function VigilanceDashboardView({ currentUser }: VigilanceDashboardProps) {
   const [alerts, setAlerts] = useState<DriftAlertItem[]>([]);
   const [ledger, setLedger] = useState<AuditLedgerBlock[]>([]);
   const [revertedMessage, setRevertedMessage] = useState<string | null>(null);
@@ -87,11 +91,24 @@ export function VigilanceDashboardView() {
             <ShieldAlert className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-sm font-bold text-slate-900">
-              Nodal Vigilance, Live ERP Drift & Compliance Dashboard (Agent 5)
-            </h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-bold text-slate-900">
+                Nodal Vigilance, Live ERP Drift &amp; Compliance Dashboard (Agent 5)
+              </h2>
+              {currentUser && (
+                <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-md border ${
+                  currentUser.role === 'IT_SAP_TEAM'
+                    ? 'bg-slate-900 text-sky-400 border-slate-700'
+                    : currentUser.role === 'MOPNG_GOVERNMENT'
+                    ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                    : 'bg-slate-100 text-slate-700 border-slate-200'
+                }`}>
+                  {currentUser.role === 'IT_SAP_TEAM' ? 'SAP BASIS ADMIN: LIVE NETWEAVER LISTENER ACTIVE' : 'CAG / CVO AUDIT COMPLIANCE MODE'}
+                </span>
+              )}
+            </div>
             <p className="text-xs text-slate-500">
-              Autonomous Real-Time SAP NetWeaver Delta Listener & Cryptographic Merkle Ledger Engine
+              Autonomous Real-Time SAP NetWeaver Delta Listener &amp; Cryptographic Merkle Ledger Engine
             </p>
           </div>
         </div>

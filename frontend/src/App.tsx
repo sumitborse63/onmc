@@ -255,7 +255,7 @@ export function App() {
               onClick={() => setActiveTab('REVIEWER')}
               className={`px-3.5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
                 activeTab === 'REVIEWER'
-                  ? 'bg-rose-600 text-white shadow-xs'
+                  ? 'bg-rose-600 text-white shadow-xs font-bold'
                   : 'text-slate-700 hover:bg-slate-100/80'
               }`}
             >
@@ -263,7 +263,7 @@ export function App() {
               <span>[1] Reviewer Portal</span>
               {currentUser.role === 'ENGINEERING_EXPERT' && (
                 <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
-                  PRIMARY
+                  PRIMARY COCKPIT
                 </span>
               )}
               {queue.length > 0 && (
@@ -283,15 +283,15 @@ export function App() {
               onClick={() => setActiveTab('REGISTRY')}
               className={`px-3.5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
                 activeTab === 'REGISTRY'
-                  ? 'bg-slate-900 text-white shadow-xs'
+                  ? 'bg-slate-900 text-white shadow-xs font-bold'
                   : 'text-slate-700 hover:bg-slate-100/80'
               }`}
             >
               <Layers className="w-4 h-4" />
               <span>[2] National Registry (1:N Explorer)</span>
               {currentUser.role === 'MOPNG_GOVERNMENT' && (
-                <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
-                  PRIMARY
+                <span className="text-[9px] font-mono bg-indigo-500 text-white px-1.5 py-0.2 rounded-md font-bold">
+                  PRIMARY SOVEREIGN
                 </span>
               )}
             </button>
@@ -300,15 +300,15 @@ export function App() {
               onClick={() => setActiveTab('DUPLICATES')}
               className={`px-3.5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
                 activeTab === 'DUPLICATES'
-                  ? 'bg-slate-900 text-white shadow-xs'
+                  ? 'bg-slate-900 text-white shadow-xs font-bold'
                   : 'text-slate-700 hover:bg-slate-100/80'
               }`}
             >
               <Copy className="w-4 h-4 text-rose-500" />
               <span>[3] Duplicate &amp; Cluster Analytics</span>
               {currentUser.role === 'INVENTORY_TEAM' && (
-                <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
-                  PRIMARY
+                <span className="text-[9px] font-mono bg-amber-500 text-white px-1.5 py-0.2 rounded-md font-bold">
+                  PRIMARY COCKPIT
                 </span>
               )}
             </button>
@@ -317,15 +317,15 @@ export function App() {
               onClick={() => setActiveTab('SIMULATOR')}
               className={`px-3.5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
                 activeTab === 'SIMULATOR'
-                  ? 'bg-slate-900 text-white shadow-xs'
+                  ? 'bg-slate-900 text-white shadow-xs font-bold'
                   : 'text-slate-700 hover:bg-slate-100/80'
               }`}
             >
               <TrendingUp className="w-4 h-4" />
               <span>[4] Strategic Sourcing Simulator</span>
               {currentUser.role === 'PROCUREMENT_TEAM' && (
-                <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
-                  PRIMARY
+                <span className="text-[9px] font-mono bg-emerald-500 text-white px-1.5 py-0.2 rounded-md font-bold">
+                  PRIMARY SOURCING
                 </span>
               )}
             </button>
@@ -334,15 +334,15 @@ export function App() {
               onClick={() => setActiveTab('OCR')}
               className={`px-3.5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
                 activeTab === 'OCR'
-                  ? 'bg-slate-900 text-white shadow-xs'
+                  ? 'bg-slate-900 text-white shadow-xs font-bold'
                   : 'text-slate-700 hover:bg-slate-100/80'
               }`}
             >
               <FileText className="w-4 h-4" />
               <span>[5] Legacy OCR Inspector (Agent 2)</span>
               {currentUser.role === 'CPSE_MANAGEMENT' && (
-                <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
-                  PRIMARY
+                <span className="text-[9px] font-mono bg-blue-500 text-white px-1.5 py-0.2 rounded-md font-bold">
+                  PRIMARY DIGITIZER
                 </span>
               )}
             </button>
@@ -351,15 +351,15 @@ export function App() {
               onClick={() => setActiveTab('VIGILANCE')}
               className={`px-3.5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer ${
                 activeTab === 'VIGILANCE'
-                  ? 'bg-slate-900 text-white shadow-xs'
+                  ? 'bg-slate-900 text-white shadow-xs font-bold'
                   : 'text-slate-700 hover:bg-slate-100/80'
               }`}
             >
               <ShieldAlert className="w-4 h-4 text-rose-500" />
               <span>[6] Vigilance &amp; Drift Monitor (Agent 5)</span>
               {currentUser.role === 'IT_SAP_TEAM' && (
-                <span className="text-[9px] font-mono bg-white/20 text-white px-1.5 py-0.2 rounded-md font-bold">
-                  PRIMARY
+                <span className="text-[9px] font-mono bg-slate-700 text-sky-300 px-1.5 py-0.2 rounded-md font-bold">
+                  PRIMARY BASIS
                 </span>
               )}
             </button>
@@ -390,20 +390,33 @@ export function App() {
                     queue={queue}
                     onApprove={handleApproveCandidate}
                     onReject={handleRejectCandidate}
+                    currentUser={currentUser}
                   />
                 )}
 
                 {activeTab === 'REGISTRY' && (
-                  <RegistryExplorerView masters={masters} records={records} />
+                  <RegistryExplorerView
+                    masters={masters}
+                    records={records}
+                    currentUser={currentUser}
+                  />
                 )}
 
-                {activeTab === 'DUPLICATES' && <DuplicateClusterView />}
+                {activeTab === 'DUPLICATES' && (
+                  <DuplicateClusterView currentUser={currentUser} />
+                )}
 
-                {activeTab === 'SIMULATOR' && <SourcingSimulatorView />}
+                {activeTab === 'SIMULATOR' && (
+                  <SourcingSimulatorView currentUser={currentUser} />
+                )}
 
-                {activeTab === 'OCR' && <LegacyOCRInspectorView />}
+                {activeTab === 'OCR' && (
+                  <LegacyOCRInspectorView currentUser={currentUser} />
+                )}
 
-                {activeTab === 'VIGILANCE' && <VigilanceDashboardView />}
+                {activeTab === 'VIGILANCE' && (
+                  <VigilanceDashboardView currentUser={currentUser} />
+                )}
               </>
             )}
           </section>

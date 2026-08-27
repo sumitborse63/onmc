@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import type { MaterialRecord, NationalMaterialMaster } from '../types';
+import type { MaterialRecord, NationalMaterialMaster, UserProfile } from '../types';
 import {
   Search,
   Download,
@@ -9,17 +9,20 @@ import {
   FileSpreadsheet,
   CheckCircle2,
   X,
+  ShieldCheck,
+  Globe,
 } from 'lucide-react';
 import { uploadCSV, getExportCSVUrl } from '../services/api';
 
 interface RegistryExplorerProps {
   masters: NationalMaterialMaster[];
   records: MaterialRecord[];
+  currentUser?: UserProfile | null;
 }
 
-export function RegistryExplorerView({ masters, records }: RegistryExplorerProps) {
+export function RegistryExplorerView({ masters, records, currentUser }: RegistryExplorerProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCPSE, setSelectedCPSE] = useState<string>('ALL');
+  const [selectedCPSE, setSelectedCPSE] = useState<string>(currentUser?.cpse === 'MoPNG' ? 'ALL' : (currentUser?.cpse || 'ALL'));
   const [selectedMaster, setSelectedMaster] = useState<NationalMaterialMaster | null>(null);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
@@ -80,13 +83,24 @@ export function RegistryExplorerView({ masters, records }: RegistryExplorerProps
       {/* Header Bar */}
       <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center border border-rose-100">
-            <Building2 className="w-4 h-4" />
+          <div className="w-8 h-8 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center border border-indigo-100">
+            <Globe className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-sm font-bold text-slate-900">
-              National Unified Material Master Registry (1:N Explorer)
-            </h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-bold text-slate-900">
+                National Unified Material Master Registry (1:N Explorer)
+              </h2>
+              {currentUser && (
+                <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-md border ${
+                  currentUser.role === 'MOPNG_GOVERNMENT'
+                    ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                    : 'bg-slate-100 text-slate-700 border-slate-200'
+                }`}>
+                  {currentUser.role === 'MOPNG_GOVERNMENT' ? 'SOVEREIGN DPI OVERSIGHT MODE' : `${currentUser.cpse} CATALOG VIEW`}
+                </span>
+              )}
+            </div>
             <p className="text-xs text-slate-500">
               One Nation – One Material Code persistent mapping table maintaining full backward traceability
             </p>

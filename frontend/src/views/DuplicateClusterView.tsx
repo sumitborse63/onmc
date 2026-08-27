@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Copy, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import type { UserProfile } from '../types';
+import { Copy, ShieldCheck, CheckCircle2, Boxes, ArrowRightLeft, Sparkles } from 'lucide-react';
 import { fetchDuplicateClusters } from '../services/api';
 
 interface DuplicateItem {
@@ -23,10 +24,15 @@ interface DuplicateCluster {
   items: DuplicateItem[];
 }
 
-export function DuplicateClusterView() {
+interface DuplicateClusterProps {
+  currentUser?: UserProfile | null;
+}
+
+export function DuplicateClusterView({ currentUser }: DuplicateClusterProps) {
   const [clusters, setClusters] = useState<DuplicateCluster[]>([]);
   const [selectedCluster, setSelectedCluster] = useState<DuplicateCluster | null>(null);
   const [filterType, setFilterType] = useState<string>('ALL');
+  const [poolActionSuccess, setPoolActionSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadClusters() {
@@ -51,20 +57,36 @@ export function DuplicateClusterView() {
   const totalInventorySavings = clusters.reduce((acc, c) => acc + c.estimatedInventorySavingsINR, 0);
   const totalDuplicatesCount = clusters.reduce((acc, c) => acc + c.totalDuplicatedSKUs, 0);
 
+  const handleInitiatePooling = (cluster: DuplicateCluster) => {
+    setPoolActionSuccess(`Inter-Refinery Safety Stock Pool Registered for ${cluster.primaryNationalCode}. Released ₹${(cluster.estimatedInventorySavingsINR/100000).toFixed(2)} Lakh working capital.`);
+    setTimeout(() => setPoolActionSuccess(null), 4000);
+  };
+
   return (
     <div className="space-y-4">
       {/* Top Banner */}
       <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center border border-rose-100">
+          <div className="w-8 h-8 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center border border-amber-100">
             <Copy className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-sm font-bold text-slate-900">
-              Inter-CPSE Duplicate & Near-Duplicate Cluster Analytics (Capability 3)
-            </h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-bold text-slate-900">
+                Inter-CPSE Duplicate &amp; Near-Duplicate Cluster Analytics (Capability 3)
+              </h2>
+              {currentUser && (
+                <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-md border ${
+                  currentUser.role === 'INVENTORY_TEAM'
+                    ? 'bg-amber-50 text-amber-700 border-amber-200'
+                    : 'bg-slate-100 text-slate-700 border-slate-200'
+                }`}>
+                  {currentUser.role === 'INVENTORY_TEAM' ? 'INVENTORY CONTROLLER: SAFETY STOCK POOLING ACTIVE' : 'INVENTORY TELEMETRY'}
+                </span>
+              )}
+            </div>
             <p className="text-xs text-slate-500">
-              Autonomous Multidimensional Entity Clustering & Safety Stock Rationalization Hub
+              Autonomous Multidimensional Entity Clustering &amp; Safety Stock Rationalization Hub
             </p>
           </div>
         </div>
@@ -81,6 +103,13 @@ export function DuplicateClusterView() {
           </div>
         </div>
       </div>
+
+      {poolActionSuccess && (
+        <div className="bg-emerald-600 text-white p-3 rounded-xl shadow-xs text-center font-mono text-xs font-semibold flex items-center justify-center gap-2 animate-fadeIn">
+          <CheckCircle2 className="w-4 h-4" />
+          {poolActionSuccess}
+        </div>
+      )}
 
       {/* Filter Tabs */}
       <div className="flex gap-2 text-xs font-semibold">
@@ -230,10 +259,18 @@ export function DuplicateClusterView() {
               </div>
             </div>
 
-            {/* Rationalization Recommendation */}
-            <div className="bg-slate-900 text-white rounded-xl p-3.5 text-xs font-mono space-y-1.5">
-              <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
-                <CheckCircle2 className="w-4 h-4" /> Recommended MoPNG Action
+            {/* Rationalization Recommendation & Action Button */}
+            <div className="bg-slate-900 text-white rounded-xl p-4 text-xs font-mono space-y-3">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
+                  <CheckCircle2 className="w-4 h-4" /> Recommended MoPNG Action
+                </div>
+                <button
+                  onClick={() => handleInitiatePooling(selectedCluster)}
+                  className="btn-stitch bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold text-xs flex items-center gap-1.5 shadow-sm cursor-pointer"
+                >
+                  <ArrowRightLeft className="w-3.5 h-3.5" /> Pool Safety Stock &amp; Release Working Capital
+                </button>
               </div>
               <p className="text-slate-300 text-[11px] leading-relaxed">
                 Consolidate all {selectedCluster.totalDuplicatedSKUs} legacy material master records under Common National Code <code className="text-rose-400 font-bold">{selectedCluster.primaryNationalCode}</code>. Initiate inter-refinery safety stock pooling across {selectedCluster.participatingCPSEs.join(', ')} to release working capital.

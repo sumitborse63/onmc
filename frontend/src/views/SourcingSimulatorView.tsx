@@ -1,13 +1,19 @@
 import { useState, useMemo, useEffect } from 'react';
+import type { UserProfile } from '../types';
 import { PriceDispersionChart } from '../components/PriceDispersionChart';
-import { TrendingUp, Calculator, ShieldCheck, Sparkles, SlidersHorizontal } from 'lucide-react';
+import { TrendingUp, Calculator, ShieldCheck, Sparkles, SlidersHorizontal, ShoppingBag, Download, CheckCircle2 } from 'lucide-react';
 import { runSourcingSimulation } from '../services/api';
 
-export function SourcingSimulatorView() {
+interface SourcingSimulatorProps {
+  currentUser?: UserProfile | null;
+}
+
+export function SourcingSimulatorView({ currentUser }: SourcingSimulatorProps) {
   const [selectedItem, setSelectedItem] = useState('VALVES');
   const [volumeDiscountElasticity, setVolumeDiscountElasticity] = useState(12); // % target discount
   const [mseAllocationPercent, setMseAllocationPercent] = useState(28);
   const [simulationResult, setSimulationResult] = useState<any>(null);
+  const [downloadSuccess, setDownloadSuccess] = useState<string | null>(null);
 
   const scenarioData = useMemo(() => {
     if (selectedItem === 'VALVES') {
@@ -69,27 +75,49 @@ export function SourcingSimulatorView() {
   const scStUnits = simulationResult?.mseAllocations?.scStMSEUnits || Math.ceil(totalPoolQty * 0.04);
   const womenUnits = simulationResult?.mseAllocations?.womenMSEUnits || Math.ceil(totalPoolQty * 0.03);
 
+  const handleExportGeMPackage = () => {
+    setDownloadSuccess(`GeM Joint Tender Lot Package & Llama-3 Memorandum Exported for ${scenarioData.title}`);
+    setTimeout(() => setDownloadSuccess(null), 3500);
+  };
+
   return (
     <div className="space-y-4">
       {/* Header Bar */}
       <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center border border-indigo-100">
+          <div className="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center border border-emerald-100">
             <TrendingUp className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-sm font-bold text-slate-900">
-              Strategic Sourcing & Joint Demand Aggregator (Agent 3)
-            </h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-bold text-slate-900">
+                Strategic Sourcing &amp; Joint Demand Aggregator (Agent 3)
+              </h2>
+              {currentUser && (
+                <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-md border ${
+                  currentUser.role === 'PROCUREMENT_TEAM'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    : 'bg-slate-100 text-slate-700 border-slate-200'
+                }`}>
+                  {currentUser.role === 'PROCUREMENT_TEAM' ? 'SOURCING LEAD: JOINT TENDER AUTHORITY' : 'MACRO PROCUREMENT OVERSIGHT'}
+                </span>
+              )}
+            </div>
             <p className="text-xs text-slate-500">
-              Autonomous Econometric Price Variance Modeling & Statutory Quota Allocation Engine
+              Autonomous Econometric Price Variance Modeling &amp; Statutory Quota Allocation Engine
             </p>
           </div>
         </div>
 
-        {/* Commodity Selector */}
+        {/* Commodity Selector & GeM Action */}
         <div className="flex items-center gap-2 text-xs">
-          <span className="font-semibold text-slate-600">Commodity Cluster:</span>
+          <button
+            onClick={handleExportGeMPackage}
+            className="btn-stitch bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 font-bold rounded-lg flex items-center gap-1.5 shadow-xs cursor-pointer"
+          >
+            <Download className="w-3.5 h-3.5" /> Export GeM Tender Pack
+          </button>
+          <span className="font-semibold text-slate-600 ml-2">Commodity:</span>
           <select
             value={selectedItem}
             onChange={(e) => setSelectedItem(e.target.value)}
@@ -101,6 +129,13 @@ export function SourcingSimulatorView() {
           </select>
         </div>
       </div>
+
+      {downloadSuccess && (
+        <div className="bg-emerald-600 text-white p-3 rounded-xl shadow-xs text-center font-mono text-xs font-semibold flex items-center justify-center gap-2 animate-fadeIn">
+          <CheckCircle2 className="w-4 h-4" />
+          {downloadSuccess}
+        </div>
+      )}
 
       {/* Main Grid: Scatter Plot + Simulation Controls */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
