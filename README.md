@@ -10,29 +10,35 @@
 
 ---
 
-## 🏛️ Executive Context
+## 🏛️ Executive Project Overview
 
 - **Problem Title**: AI-Driven Standardization and Harmonization of Material Codes Across CPSEs
 - **Target Organization**: **Ministry of Petroleum & Natural Gas (MoPNG)** // **Chennai Petroleum Corporation Limited (CPCL)**
-- **Team**: **AstraNyx** | Skynovia Technologies
-- **Authors**: **Kasturi Shinde**, **Sumit Borse**
 - **Standards Conformance**: IEEE 830 / ISO/IEC/IEEE 29148 Software Requirements Specification (SRS)
 - **Deployment Mandate**: 100% Free & Open-Source Software (FOSS) — Zero Recurring SaaS API Token Costs
 
 ---
 
-## 📌 Problem Statement & Vision
+## 📖 Comprehensive Project Description
 
-Central Public Sector Enterprises (CPSEs) across **Oil & Gas, Power, Steel, Mining, and Heavy Engineering** (CPCL, IOCL, ONGC, HPCL, BPCL, SAIL, NTPC) maintain millions of stock-keeping units (SKUs) in isolated ERP silos (SAP Materials Management). Identical physical components (e.g. standard valves, high-pressure gaskets, bearings) are cataloged under discordant internal part numbers, shorthand abbreviations, and fragmented specifications.
+Central Public Sector Enterprises (CPSEs) operating in heavy engineering, power, steel, mining, and oil & gas sectors (such as **CPCL, IOCL, ONGC, HPCL, BPCL, SAIL, NTPC, and BHEL**) independently procure, catalog, and inventory millions of industrial materials, spare parts, valves, pipes, and consumables.
 
-**Consequences of Fragmentation:**
-1. **Redundant Safety Stock & Working Capital Lockup**: Duplicated inventory stored across neighboring public sector warehouses.
-2. **Procurement Slicing**: Disconnected purchasing prevents inter-CPSE volume demand aggregation.
-3. **Zero Inter-Enterprise Visibility**: Inability to execute emergency inter-CPSE stock transfers during refinery outages.
-4. **Error-Prone Manual Harmonization**: Traditional rule-based matching fails on dense, abbreviation-laden industrial descriptions.
+Due to decentralized ERP landscapes (principally SAP Materials Management), identical or functionally interchangeable components are assigned distinct internal material codes, non-standardized shorthand descriptions, conflicting technical parameter formatting, and discordant Units of Measurement (UoM).
 
-### The DPI Solution: "One Nation – One Material Code" (ONMC)
-Positioned as the **"UPI of Material Master Data"**, this platform acts as an intelligent, non-invasive overlay on top of existing CPSE SAP/ERP installations, harmonizing records into a standardized **Common National Material Code (`CNM-XXXXXX-XXX`)** while maintaining a permanent **1:N backward mapping** to legacy codes.
+### Key Challenges Addressed
+1. **Catalog Fragmentation & Redundant Safety Stock**: Identical materials cataloged under multiple codes lead to duplicate safety stock holdings and inflated inventory carrying costs across public sector warehouses.
+2. **Procurement Slicing**: Fragmented purchasing data prevents multi-enterprise demand consolidation, forfeiting high-volume tender discounts and bargaining power.
+3. **Zero Inter-Enterprise Visibility**: Lack of a standardized cross-referencing taxonomy prevents emergency stock transfers and mutual aid between neighboring refinery or plant locations during unplanned outages.
+4. **Failure of Rule-Based Matching**: Traditional fuzzy string matching algorithms fail on dense, abbreviation-laden industrial specifications (e.g., distinguishing pressure ratings `150#` vs `300#` or metallurgy grades `SS316` vs `SS304`).
+
+### The Digital Public Infrastructure (DPI) Solution: "One Nation – One Material Code"
+Positioned as the **"UPI of Material Master Data"**, this platform delivers a sovereign, federated Digital Public Infrastructure that:
+- Ingests raw material records from disparate SAP/ERP databases via secure, non-invasive connectors.
+- Uses domain-adapted **Natural Language Processing (NLP)** and **Named Entity Recognition (NER)** to extract core engineering attributes (Material Grade, Dimension, Pressure Class, Standard Specifications, and UoM).
+- Computes **Hybrid Vector & Attribute Cosine Similarity** to match equivalent items across enterprise boundaries.
+- Recommends standardized descriptions, UNSPSC categorizations, and persistent **Common National Material Codes (`CNM-XXXXXX-XXX`)** while maintaining an immutable **1:N backward mapping** to all legacy CPSE part numbers.
+- Provides technical reviewers with transparent **Explainable AI (XAI)** justification tables and interactive **5-Axis Factor Radar Charts**.
+- Enforces an immutable, tamper-evident **SHA-256 Merkle Blockchain Ledger** to audit all adjudications and detect unauthorized ERP table drifts.
 
 ---
 
@@ -62,7 +68,7 @@ Positioned as the **"UPI of Material Master Data"**, this platform acts as an in
 - **Hard-Blocking Rules**: Incompatible material grades (e.g. SS316 vs SS304) or pressure classes (150# vs 300#) automatically incur heavy penalties, preventing false-positive auto-merges.
 
 ### 2. Agent 2: Legacy Document Migration & Blueprint OCR ([backend/services/ocr_pipeline.py](backend/services/ocr_pipeline.py))
-- Multimodal OCR with spatial bounding-box alignment for legacy blueprints and scanned POs.
+- Multimodal OCR with spatial bounding-box alignment for legacy blueprints and scanned purchase orders.
 - Domain dictionary spell-correction against ASTM, ASME, and API lexicons (`SS3I6` ➔ `SS316`, `15O#` ➔ `150#`, `WCB_B0DY` ➔ `WCB BODY`).
 
 ### 3. Agent 3: Strategic Sourcing & Demand Aggregator ([backend/services/sourcing_simulator.py](backend/services/sourcing_simulator.py))
@@ -224,13 +230,3 @@ onmc/
 - **DPDP Act 2023**: Zero commercial leakage via Agent 6 edge sanitization.
 - **Public Procurement Policy for MSEs Order, 2012**: Enforces mandatory 25% allocation (4% SC/ST, 3% Women MSEs) in all aggregated joint tenders.
 - **CAG & Internal Vigilance Audit**: Complete traceability through tamper-evident SHA-256 Merkle chain hashes.
-
----
-
-## 👥 Authors & Team
-
-**Team AstraNyx | Skynovia Technologies**
-- **Kasturi Shinde**
-- **Sumit Borse**
-
-*Developed for the Ministry of Petroleum & Natural Gas (MoPNG) // Chennai Petroleum Corporation Limited (CPCL)*

@@ -510,5 +510,5 @@ export function XAIDiffTable({ rows }: { rows: DiffRow[] }) {
 
 ---
 *UI/UX Design Sign-Off:*  
-**Lead UI/UX Architect:** Kasturi Shinde, Sumit Borse  
+**Design Specification:** National Unified Material Master UI/UX  
 **Target Organization:** Ministry of Petroleum & Natural Gas (MoPNG) / Chennai Petroleum Corporation Limited (CPCL)

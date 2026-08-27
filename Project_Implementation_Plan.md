@@ -447,5 +447,5 @@ All UI code delivered for the Reviewer Portal must satisfy the following criteri
 
 ---
 *Signed & Approved for Implementation:*  
-**Project Leads:** Kasturi Shinde, Sumit Borse  
+**Implementation Specification:** National Unified Material Master Implementation  
 **Target Entity:** Ministry of Petroleum & Natural Gas (MoPNG) / Chennai Petroleum Corporation Limited (CPCL)

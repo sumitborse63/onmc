@@ -309,8 +309,8 @@ export function App() {
           </span>
           <div className="flex items-center gap-4 text-slate-500">
             <span>IEEE 830 / ISO 29148 Standard</span>
-            <span>Authors: Kasturi Shinde, Sumit Borse</span>
-            <span>MoPNG / CPCL / IOCL</span>
+            <span>Ministry of Petroleum & Natural Gas (MoPNG)</span>
+            <span>CPCL / IOCL Inter-CPSE Pilot</span>
           </div>
         </div>
       </footer>

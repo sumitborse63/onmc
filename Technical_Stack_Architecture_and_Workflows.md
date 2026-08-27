@@ -290,4 +290,4 @@ flowchart TD
 
 | Prepared By | Target Organization |
 | :--- | :--- |
-| **Kasturi Shinde, Sumit Borse**<br>Lead AI & Systems Architects | **Ministry of Petroleum & Natural Gas (MoPNG)**<br>Chennai Petroleum Corporation Limited (CPCL) |
+| **ONMC Engineering & Core Architecture**<br>Digital Public Infrastructure | **Ministry of Petroleum & Natural Gas (MoPNG)**<br>Chennai Petroleum Corporation Limited (CPCL) |

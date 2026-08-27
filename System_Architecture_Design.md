@@ -463,5 +463,5 @@ The Reviewer Portal rejects conventional consumer SaaS design patterns in favor 
 
 ---
 *Architectural Approval Sign-Off:*  
-**Lead Architects:** Kasturi Shinde, Sumit Borse  
+**Architecture Specification:** National Unified Material Master Architecture  
 **Target Organization:** Ministry of Petroleum & Natural Gas (MoPNG) / Chennai Petroleum Corporation Limited (CPCL)
