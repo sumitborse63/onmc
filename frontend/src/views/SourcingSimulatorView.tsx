@@ -168,6 +168,11 @@ export function SourcingSimulatorView({ currentUser }: SourcingSimulatorProps) {
                 Joint Tendering Aggregation Model
               </span>
             </div>
+            {currentUser?.role !== 'PROCUREMENT_TEAM' && (
+              <div className="bg-amber-50 border border-amber-200 text-amber-800 p-2.5 rounded-lg text-[11px] font-sans">
+                <strong>View-Only Mode:</strong> Adjusting tender metrics is restricted to SCM Procurement Officers.
+              </div>
+            )}
 
             {/* Slider 1: Target Discount */}
             <div className="space-y-2">
@@ -186,7 +191,8 @@ export function SourcingSimulatorView({ currentUser }: SourcingSimulatorProps) {
                 max="25"
                 value={volumeDiscountElasticity}
                 onChange={(e) => setVolumeDiscountElasticity(Number(e.target.value))}
-                className="w-full accent-rose-600 cursor-pointer"
+                disabled={currentUser?.role !== 'PROCUREMENT_TEAM'}
+                className="w-full accent-rose-600 cursor-pointer disabled:opacity-50"
               />
             </div>
 
@@ -207,7 +213,8 @@ export function SourcingSimulatorView({ currentUser }: SourcingSimulatorProps) {
                 max="50"
                 value={mseAllocationPercent}
                 onChange={(e) => setMseAllocationPercent(Number(e.target.value))}
-                className="w-full accent-emerald-600 cursor-pointer"
+                disabled={currentUser?.role !== 'PROCUREMENT_TEAM'}
+                className="w-full accent-emerald-600 cursor-pointer disabled:opacity-50"
               />
             </div>
 

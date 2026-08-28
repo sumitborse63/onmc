@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { DriftAlertItem, AuditLedgerBlock, UserProfile } from '../types';
-import { fetchLedgerBlocks, revertDriftAlert, fetchDriftAlerts } from '../services/api';
+import { fetchLedgerBlocks, revertDriftAlert, fetchDriftAlerts, fetchSapSyncQueue, executeSapSync } from '../services/api';
 import {
   ShieldAlert,
   AlertOctagon,
@@ -9,6 +9,9 @@ import {
   CheckCircle,
   PlusCircle,
   Activity,
+  Server,
+  RefreshCw,
+  Terminal,
 } from 'lucide-react';
 import { LIVE_DRIFT_ALERTS, INITIAL_AUDIT_LEDGER } from '../data/mockData';
 
@@ -16,19 +19,23 @@ interface VigilanceDashboardProps {
   currentUser?: UserProfile | null;
 }
 
-export function VigilanceDashboardView({}: VigilanceDashboardProps) {
-  const [subTab, setSubTab] = useState<'DRIFT_ALERTS' | 'LEDGER' | 'INTEGRATION_HEALTH'>('DRIFT_ALERTS');
+export function VigilanceDashboardView({ currentUser }: VigilanceDashboardProps) {
+  const [subTab, setSubTab] = useState<'DRIFT_ALERTS' | 'LEDGER' | 'INTEGRATION_HEALTH' | 'SAP_SYNC_QUEUE'>('DRIFT_ALERTS');
   const [alerts, setAlerts] = useState<DriftAlertItem[]>(LIVE_DRIFT_ALERTS);
   const [ledger, setLedger] = useState<AuditLedgerBlock[]>(INITIAL_AUDIT_LEDGER);
+  const [syncQueue, setSyncQueue] = useState<any[]>([]);
   const [revertedMessage, setRevertedMessage] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  // Ingest live alerts and ledger from backend API
+  // Ingest live alerts, ledger and sync queue from backend API
   useEffect(() => {
     async function loadData() {
       try {
-        const [ledgerRes, alertsRes] = await Promise.all([
+        const hasAccess = currentUser?.role === 'IT_SAP_TEAM' || currentUser?.role === 'MOPNG_GOVERNMENT';
+        const [ledgerRes, alertsRes, syncQueueRes] = await Promise.all([
           fetchLedgerBlocks(),
           fetchDriftAlerts(),
+          hasAccess ? fetchSapSyncQueue() : Promise.resolve([])
         ]);
         if (ledgerRes && ledgerRes.ledgerBlocks && ledgerRes.ledgerBlocks.length > 0) {
           setLedger(ledgerRes.ledgerBlocks);
@@ -36,12 +43,15 @@ export function VigilanceDashboardView({}: VigilanceDashboardProps) {
         if (alertsRes && Array.isArray(alertsRes) && alertsRes.length > 0) {
           setAlerts(alertsRes);
         }
+        if (syncQueueRes && Array.isArray(syncQueueRes)) {
+          setSyncQueue(syncQueueRes);
+        }
       } catch (err) {
         console.error(err);
       }
     }
     loadData();
-  }, []);
+  }, [currentUser]);
 
   const handleRevert = async (alertId: string, materialCode: string) => {
     const res = await revertDriftAlert(alertId);
@@ -61,22 +71,46 @@ export function VigilanceDashboardView({}: VigilanceDashboardProps) {
     setTimeout(() => setRevertedMessage(null), 4000);
   };
 
+  const handleSyncExecute = async (queueId: string, localCode: string) => {
+    try {
+      setIsProcessing(true);
+      setRevertedMessage(`Initiating NetWeaver RFC Sync for ${localCode}...`);
+      const res = await executeSapSync(queueId);
+      if (res && res.status === 'SYNCED') {
+        setSyncQueue((prev) => prev.filter((q) => q.queueId !== queueId));
+        setRevertedMessage(`SAP S/4HANA Sync Success: Committed transaction ${res.sapReceipt?.rfcDocumentNumber} for ${localCode}.`);
+        setTimeout(() => setRevertedMessage(null), 4000);
+        
+        // Reload ledger blocks
+        const ledgerRes = await fetchLedgerBlocks();
+        if (ledgerRes && ledgerRes.ledgerBlocks) {
+          setLedger(ledgerRes.ledgerBlocks);
+        }
+      }
+    } catch (err: any) {
+      setRevertedMessage(`SAP Sync Error: ${err.message || 'Operation failed'}`);
+      setTimeout(() => setRevertedMessage(null), 4000);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   const handleSimulateNewRogueOverride = () => {
     const newAlert: DriftAlertItem = {
       id: `DRIFT-${Date.now().toString().slice(-4)}`,
-      timestamp: new Date().toLocaleString(),
-      cpseName: 'CPCL',
-      plantLocation: 'Manali Refinery',
-      materialCode: 'CPCL-649787',
-      nationalCode: 'CNM-401615-046',
+      timestamp: new Date().toLocaleTimeString() + ' IST',
+      cpseName: currentUser?.cpse || 'CPCL',
+      plantLocation: currentUser?.plantLocation?.split(',')[0] || 'Manali Refinery',
+      materialCode: `MAT-${Math.floor(Math.random() * 900000 + 100000)}`,
+      nationalCode: 'CNM-100010-004',
       severity: 'LEVEL_3_ROGUE_OVERRIDE',
       driftDescription: 'UNAUTHORIZED SPEC OVERRIDE: Local engineer manually altered refractory brick carbon percentage in SAP MAKT.',
       fieldAltered: 'MAKT-MAKTX (Material Description)',
       originalValue: 'LADLE REFRACTORY LINING BRICK MGO-C (10-14% C)',
-      driftedValue: 'LADLE REFRACTORY LINING BRICK MGO-C (LOW GRADE 6% C) [ROGUE]',
-      status: 'ACTIVE_ALERT',
+      driftedValue: 'LADLE REFRACTORY LINING BRICK MGO-C (SUPER HIGH CARB 20%)',
+      status: 'ACTIVE_ALERT'
     };
-    setAlerts((prev) => [newAlert, ...prev]);
+    setAlerts(prev => [newAlert, ...prev]);
   };
 
   return (
@@ -117,6 +151,23 @@ export function VigilanceDashboardView({}: VigilanceDashboardProps) {
               ERP Drift Alerts ({alerts.filter((a) => a.status === 'ACTIVE_ALERT').length})
             </span>
           </button>
+          
+          {(currentUser?.role === 'IT_SAP_TEAM' || currentUser?.role === 'MOPNG_GOVERNMENT') && (
+            <button
+              onClick={() => setSubTab('SAP_SYNC_QUEUE')}
+              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                subTab === 'SAP_SYNC_QUEUE'
+                  ? 'bg-white text-slate-900 shadow-xs font-bold'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <span className="flex items-center gap-1.5">
+                <Server className="w-3.5 h-3.5 text-sky-600" />
+                SAP Sync Queue ({syncQueue.length})
+              </span>
+            </button>
+          )}
+
           <button
             onClick={() => setSubTab('LEDGER')}
             className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
@@ -130,6 +181,7 @@ export function VigilanceDashboardView({}: VigilanceDashboardProps) {
               SHA-256 Merkle Ledger
             </span>
           </button>
+          
           <button
             onClick={() => setSubTab('INTEGRATION_HEALTH')}
             className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
@@ -140,79 +192,81 @@ export function VigilanceDashboardView({}: VigilanceDashboardProps) {
           >
             <span className="flex items-center gap-1.5">
               <Activity className="w-3.5 h-3.5 text-emerald-600" />
-              6-Agent System Health
+              Agent Status &amp; Telemetry
             </span>
           </button>
         </div>
       </div>
 
       {revertedMessage && (
-        <div className="bg-emerald-600 text-white p-3.5 rounded-2xl shadow-xs text-center font-mono text-xs font-semibold flex items-center justify-center gap-2 animate-fadeIn">
-          <CheckCircle className="w-4 h-4" />
+        <div className="bg-emerald-600 text-white p-3 rounded-xl shadow-xs text-center font-mono text-xs font-semibold flex items-center justify-center gap-2 animate-fadeIn">
+          <CheckCircle className="w-4 h-4 animate-bounce" />
           {revertedMessage}
         </div>
       )}
 
-      {/* VIEW 1: LIVE ERP DRIFT & ROGUE OVERRIDES */}
+      {/* VIEW 1: DRIFT ALERTS */}
       {subTab === 'DRIFT_ALERTS' && (
-        <div className="space-y-4">
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-4">
-            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
-              <div>
-                <h3 className="text-xs font-bold text-slate-900 uppercase font-mono flex items-center gap-1.5">
-                  <AlertOctagon className="w-4 h-4 text-rose-600" />
-                  Live SAP NetWeaver Description Drift &amp; Unauthorized Override Alerts
-                </h3>
-                <p className="text-[11px] text-slate-500 mt-0.5">
-                  Real-time delta listener intercepts manual field deviations and generates 1-click BAPI reversal transactions
-                </p>
-              </div>
-
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-4">
+          <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+            <span className="text-xs font-bold text-slate-900 uppercase flex items-center gap-1.5">
+              <AlertOctagon className="w-4 h-4 text-rose-600" />
+              Live SAP NetWeaver Description Drift &amp; Field Override Alerts
+            </span>
+            <div className="flex items-center gap-2">
               <button
                 onClick={handleSimulateNewRogueOverride}
-                className="btn-stitch bg-slate-900 hover:bg-slate-800 text-white px-3.5 py-1.5 text-xs font-semibold rounded-xl flex items-center gap-1 shadow-xs cursor-pointer"
+                className="btn-stitch bg-rose-50 hover:bg-rose-100 text-rose-700 px-3 py-1 text-xs rounded-lg font-bold flex items-center gap-1 cursor-pointer"
               >
-                <PlusCircle className="w-3.5 h-3.5" /> Simulate SAP Rogue Edit
+                <PlusCircle className="w-3.5 h-3.5" /> Simulate Rogue Edit
               </button>
             </div>
+          </div>
 
-            <div className="space-y-3">
-              {alerts.map((alert) => (
-                <div
-                  key={alert.id}
-                  className={`p-4 rounded-2xl border font-mono text-xs space-y-3 transition-colors ${
-                    alert.severity === 'LEVEL_3_ROGUE_OVERRIDE'
-                      ? 'bg-rose-50/30 border-rose-200'
-                      : alert.severity === 'LEVEL_2_TOLERANCE'
-                      ? 'bg-amber-50/30 border-amber-200'
-                      : 'bg-emerald-50/30 border-emerald-200'
-                  }`}
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={`px-2 py-0.5 text-[10px] font-bold rounded-md ${
-                          alert.severity === 'LEVEL_3_ROGUE_OVERRIDE'
-                            ? 'bg-rose-600 text-white'
-                            : alert.severity === 'LEVEL_2_TOLERANCE'
-                            ? 'bg-amber-600 text-white'
-                            : 'bg-emerald-600 text-white'
-                        }`}
-                      >
-                        {alert.severity}
-                      </span>
-                      <span className="font-bold text-slate-900">{alert.cpseName} ({alert.plantLocation})</span>
-                      <span className="text-slate-500 text-[11px]">Part: {alert.materialCode}</span>
-                    </div>
-                    <span className="text-slate-400 text-[11px]">{alert.timestamp}</span>
+          <div className="space-y-3">
+            {alerts.map((alert) => (
+              <div
+                key={alert.id}
+                className={`p-4 rounded-xl border font-mono text-xs space-y-3 transition-colors ${
+                  alert.severity === 'LEVEL_3_ROGUE_OVERRIDE'
+                    ? 'bg-rose-50/30 border-rose-200'
+                    : alert.severity === 'LEVEL_2_TOLERANCE'
+                    ? 'bg-amber-50/30 border-amber-200'
+                    : 'bg-emerald-50/30 border-emerald-200'
+                }`}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`px-2 py-0.5 text-[10px] font-bold rounded-md ${
+                        alert.severity === 'LEVEL_3_ROGUE_OVERRIDE'
+                          ? 'bg-rose-600 text-white'
+                          : alert.severity === 'LEVEL_2_TOLERANCE'
+                          ? 'bg-amber-600 text-white'
+                          : 'bg-emerald-600 text-white'
+                      }`}
+                    >
+                      {alert.severity}
+                    </span>
+                    <span className="font-bold text-slate-900">
+                      {alert.cpseName} ({alert.plantLocation})
+                    </span>
+                    <span className="text-slate-500 text-[11px]">Part: {alert.materialCode}</span>
                   </div>
+                  <span className="text-slate-400 text-[11px]">{alert.timestamp}</span>
+                </div>
 
-                  <p className="font-semibold text-slate-900 text-xs">{alert.driftDescription}</p>
+                <div className="bg-white/80 p-3 rounded-lg border border-slate-200 space-y-1">
+                  <div className="text-slate-500 font-semibold uppercase text-[10px]">Alert description:</div>
+                  <div className="text-slate-900 font-bold">{alert.driftDescription}</div>
+                  <div className="text-[10px] text-slate-400 font-medium">Altered Field: {alert.fieldAltered}</div>
+                </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-white p-3 rounded-xl border border-slate-200/80 text-xs">
+                <div className="flex items-center justify-between pt-2 border-t border-slate-200/50">
+                  <div className="flex flex-wrap gap-4">
                     <div>
-                      <span className="text-slate-400 block text-[10px] uppercase font-medium">Approved National Master State:</span>
-                      <span className="font-bold text-emerald-700">{alert.originalValue}</span>
+                      <span className="text-slate-400 block text-[10px] uppercase font-medium">Approved National Master:</span>
+                      <span className="font-bold text-slate-700">{alert.originalValue}</span>
                     </div>
                     <div>
                       <span className="text-slate-400 block text-[10px] uppercase font-medium">Unauthorized Local SAP Field Value:</span>
@@ -220,31 +274,86 @@ export function VigilanceDashboardView({}: VigilanceDashboardProps) {
                     </div>
                   </div>
 
-                  <div className="flex justify-between items-center pt-2 border-t border-slate-200/60 text-xs">
-                    <span className="text-slate-500">
-                      Modified Field: <strong className="text-slate-800">{alert.fieldAltered}</strong>
+                  {alert.status === 'ACTIVE_ALERT' ? (
+                    <button
+                      onClick={() => handleRevert(alert.id, alert.materialCode)}
+                      disabled={currentUser?.role !== 'IT_SAP_TEAM' && currentUser?.role !== 'MOPNG_GOVERNMENT'}
+                      className="btn-stitch bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 font-semibold text-xs rounded-lg flex items-center gap-1.5 shadow-2xs cursor-pointer disabled:opacity-50"
+                      title={currentUser?.role !== 'IT_SAP_TEAM' && currentUser?.role !== 'MOPNG_GOVERNMENT' ? "Drift Reversion is restricted to SAP IT Admins or MoPNG Officials" : ""}
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" /> Enforce &amp; Revert to Master
+                    </button>
+                  ) : (
+                    <span className="text-emerald-700 font-bold flex items-center gap-1 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-200">
+                      <CheckCircle className="w-3.5 h-3.5" /> Reverted to Master
                     </span>
-                    {alert.status === 'ACTIVE_ALERT' ? (
-                      <button
-                        onClick={() => handleRevert(alert.id, alert.materialCode)}
-                        className="btn-stitch bg-rose-600 hover:bg-rose-500 text-white px-3.5 py-1.5 font-bold text-xs rounded-xl flex items-center gap-1.5 shadow-2xs cursor-pointer"
-                      >
-                        <RotateCcw className="w-3.5 h-3.5" /> Enforce &amp; Revert to Master
-                      </button>
-                    ) : (
-                      <span className="text-emerald-700 font-bold flex items-center gap-1 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
-                        <CheckCircle className="w-3.5 h-3.5" /> Reverted to Master
-                      </span>
-                    )}
-                  </div>
+                  )}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
       )}
 
-      {/* VIEW 2: CRYPTOGRAPHIC MERKLE AUDIT LEDGER */}
+      {/* VIEW 2: SAP SYNC QUEUE */}
+      {subTab === 'SAP_SYNC_QUEUE' && (
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-4">
+          <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+            <span className="text-xs font-bold text-slate-900 uppercase flex items-center gap-1.5">
+              <Server className="w-4 h-4 text-sky-600" />
+              SAP S/4HANA NetWeaver Synchronization Queue (Separation of Duties)
+            </span>
+            <span className="text-xs font-mono bg-sky-50 text-sky-700 px-2 py-0.5 rounded border border-sky-200 font-bold">
+              IT Admin Sync Execution Authorization Required
+            </span>
+          </div>
+
+          {syncQueue.length === 0 ? (
+            <div className="text-center py-8 text-slate-400 font-mono text-xs bg-slate-50 rounded-xl border border-slate-200/80">
+              Zero pending records in NetWeaver Sync queue. Separation of duties validated.
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left font-mono text-xs">
+                <thead>
+                  <tr className="bg-slate-50 border-b border-slate-200 text-[10px] text-slate-400 uppercase tracking-wider">
+                    <th className="py-2.5 px-3">Queue ID</th>
+                    <th className="py-2.5 px-3">Local Code</th>
+                    <th className="py-2.5 px-3">National Code</th>
+                    <th className="py-2.5 px-3">Aggregated nomenclature</th>
+                    <th className="py-2.5 px-3">CPSE / Plant</th>
+                    <th className="py-2.5 px-3">Approved By</th>
+                    <th className="py-2.5 px-3 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {syncQueue.map((item) => (
+                    <tr key={item.queueId} className="hover:bg-slate-50/80 transition-colors">
+                      <td className="py-3 px-3 font-bold text-slate-600">{item.queueId}</td>
+                      <td className="py-3 px-3 font-bold text-slate-900">{item.localCPSECode}</td>
+                      <td className="py-3 px-3 text-sky-600 font-bold">{item.nationalCode}</td>
+                      <td className="py-3 px-3 text-slate-800 font-medium">{item.standardizedDescription}</td>
+                      <td className="py-3 px-3 text-slate-500">{item.cpseName} ({item.plantLocation})</td>
+                      <td className="py-3 px-3 text-slate-600">{item.approvedBy}</td>
+                      <td className="py-3 px-3 text-right">
+                        <button
+                          onClick={() => handleSyncExecute(item.queueId, item.localCPSECode)}
+                          disabled={isProcessing}
+                          className="btn-stitch bg-sky-600 hover:bg-sky-500 text-white px-3 py-1.5 text-xs font-bold rounded-lg cursor-pointer disabled:opacity-50"
+                        >
+                          Trigger SAP S/4HANA Sync
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* VIEW 3: CRYPTOGRAPHIC MERKLE AUDIT LEDGER */}
       {subTab === 'LEDGER' && (
         <div className="bg-slate-900 text-white rounded-2xl p-5 space-y-4 font-mono text-xs shadow-sm">
           <div className="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -281,7 +390,7 @@ export function VigilanceDashboardView({}: VigilanceDashboardProps) {
         </div>
       )}
 
-      {/* VIEW 3: 6-AGENT SYSTEM HEALTH & PROTOCOLS */}
+      {/* VIEW 4: 6-AGENT SYSTEM HEALTH & TELEMETRY */}
       {subTab === 'INTEGRATION_HEALTH' && (
         <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-4">
           <div className="flex justify-between items-center border-b border-slate-100 pb-3">
