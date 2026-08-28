@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { UserProfile } from '../types';
-import { Copy, ShieldCheck, CheckCircle2, Boxes, ArrowRightLeft, Sparkles } from 'lucide-react';
+import { Copy, ShieldCheck, CheckCircle2, ArrowRightLeft } from 'lucide-react';
 import { fetchDuplicateClusters } from '../services/api';
 
 interface DuplicateItem {

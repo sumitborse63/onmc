@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { UserProfile } from '../types';
-import { FileText, CheckCircle2, AlertTriangle, SpellCheck, ArrowRight, Scan, Play, RefreshCw, Factory, UploadCloud } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, SpellCheck, ArrowRight, Scan, Play, RefreshCw, Factory } from 'lucide-react';
 import { runOCRSpellcheck } from '../services/api';
 
 interface LegacyOCRInspectorProps {

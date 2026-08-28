@@ -3,13 +3,11 @@ import type { MaterialRecord, NationalMaterialMaster, UserProfile } from '../typ
 import {
   Search,
   Download,
-  Building2,
   Hash,
   UploadCloud,
   FileSpreadsheet,
   CheckCircle2,
   X,
-  ShieldCheck,
   Globe,
 } from 'lucide-react';
 import { uploadCSV, getExportCSVUrl } from '../services/api';
@@ -290,7 +288,6 @@ export function RegistryExplorerView({ masters, records, currentUser }: Registry
         </div>
       </div>
 
-      {/* CSV Batch Upload Modal */}
       {showUploadModal && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
           <div className="bg-white border border-slate-200 rounded-2xl shadow-xl p-6 max-w-lg w-full font-mono text-xs space-y-4">

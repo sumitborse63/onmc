@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import type { UserProfile } from '../types';
 import { PriceDispersionChart } from '../components/PriceDispersionChart';
-import { TrendingUp, Calculator, ShieldCheck, Sparkles, SlidersHorizontal, ShoppingBag, Download, CheckCircle2 } from 'lucide-react';
+import { TrendingUp, Calculator, ShieldCheck, Sparkles, SlidersHorizontal, Download, CheckCircle2 } from 'lucide-react';
 import { runSourcingSimulation } from '../services/api';
 
 interface SourcingSimulatorProps {
