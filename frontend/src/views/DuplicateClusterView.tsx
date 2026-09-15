@@ -77,11 +77,13 @@ export function DuplicateClusterView({ currentUser }: DuplicateClusterProps) {
               </h2>
               {currentUser && (
                 <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-md border ${
-                  currentUser.role === 'INVENTORY_TEAM'
+                  currentUser.role === 'CPSE_MANAGEMENT' || currentUser.role === 'PROCUREMENT_TEAM' || currentUser.role === 'SUPER_ADMIN'
                     ? 'bg-amber-50 text-amber-700 border-amber-200'
                     : 'bg-slate-100 text-slate-700 border-slate-200'
                 }`}>
-                  {currentUser.role === 'INVENTORY_TEAM' ? 'INVENTORY CONTROLLER: SAFETY STOCK POOLING ACTIVE' : 'INVENTORY TELEMETRY'}
+                  {currentUser.role === 'CPSE_MANAGEMENT' || currentUser.role === 'PROCUREMENT_TEAM' || currentUser.role === 'SUPER_ADMIN'
+                    ? 'STOCK CONTROLLER: SAFETY STOCK POOLING ACTIVE'
+                    : 'INVENTORY TELEMETRY'}
                 </span>
               )}
             </div>
@@ -265,12 +267,18 @@ export function DuplicateClusterView({ currentUser }: DuplicateClusterProps) {
                 <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
                   <CheckCircle2 className="w-4 h-4" /> Recommended MoPNG Action
                 </div>
-                <button
-                  onClick={() => handleInitiatePooling(selectedCluster)}
-                  className="btn-stitch bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold text-xs flex items-center gap-1.5 shadow-sm cursor-pointer"
-                >
-                  <ArrowRightLeft className="w-3.5 h-3.5" /> Pool Safety Stock &amp; Release Working Capital
-                </button>
+                {currentUser?.role !== 'CPSE_MANAGEMENT' && currentUser?.role !== 'PROCUREMENT_TEAM' && currentUser?.role !== 'SUPER_ADMIN' ? (
+                  <div className="bg-amber-50 border border-amber-200 text-amber-800 p-2.5 rounded-lg text-xs font-sans max-w-xs text-center font-bold">
+                    View-Only: Safety Stock Pooling is restricted to Plant Management &amp; Sourcing Teams.
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => handleInitiatePooling(selectedCluster)}
+                    className="btn-stitch bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg font-bold text-xs flex items-center gap-1.5 shadow-sm cursor-pointer"
+                  >
+                    <ArrowRightLeft className="w-3.5 h-3.5" /> Pool Safety Stock &amp; Release Working Capital
+                  </button>
+                )}
               </div>
               <p className="text-slate-300 text-[11px] leading-relaxed">
                 Consolidate all {selectedCluster.totalDuplicatedSKUs} legacy material master records under Common National Code <code className="text-rose-400 font-bold">{selectedCluster.primaryNationalCode}</code>. Initiate inter-refinery safety stock pooling across {selectedCluster.participatingCPSEs.join(', ')} to release working capital.

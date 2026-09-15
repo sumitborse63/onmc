@@ -12,6 +12,8 @@ import {
   CheckCircle2,
   Boxes,
   Calculator,
+  FilePlus,
+  X,
 } from 'lucide-react';
 import { runSourcingSimulation } from '../services/api';
 
@@ -27,49 +29,99 @@ export function ProcurementCockpitView({ records = [], currentUser }: Procuremen
   const [mseAllocationPercent, setMseAllocationPercent] = useState(28);
   const [simulationResult, setSimulationResult] = useState<any>(null);
   const [downloadSuccess, setDownloadSuccess] = useState<string | null>(null);
+  
+  // Request New Master States
+  const [showRequestModal, setShowRequestModal] = useState(false);
+  const [requestDesc, setRequestDesc] = useState('');
+  const [requestStatus, setRequestStatus] = useState<string | null>(null);
 
   // Voice Search States
   const [isListening, setIsListening] = useState(false);
   const [voiceTranscript, setVoiceTranscript] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Dynamically derive distinct commodities from records (with multi-CPSE quotations)
+  const availableCommodities = useMemo(() => {
+    if (!records || records.length === 0) {
+      return [
+        {
+          id: 'VALVES',
+          name: 'Ball Valve 2" Class 150# Flanged WCB/SS316',
+          nationalCode: 'CNM-100010-004',
+          rates: [
+            { cpseName: 'CPCL (Manali)', rate: 14200, annualQty: 1200 },
+            { cpseName: 'IOCL (Panipat)', rate: 12800, annualQty: 4800 },
+            { cpseName: 'ONGC (Ankleshwar)', rate: 13400, annualQty: 2400 },
+            { cpseName: 'BPCL (Kochi)', rate: 13900, annualQty: 1600 },
+          ],
+        },
+        {
+          id: 'GASKETS',
+          name: 'Spiral Wound Gasket SS316 4" Class 150#',
+          nationalCode: 'CNM-100001',
+          rates: [
+            { cpseName: 'SAIL (Bhilai)', rate: 529.0, annualQty: 2400 },
+            { cpseName: 'CPCL (Cauvery)', rate: 495.0, annualQty: 800 },
+            { cpseName: 'IOCL (Haldia)', rate: 460.0, annualQty: 3200 },
+            { cpseName: 'HPCL (Visakh)', rate: 510.0, annualQty: 1400 },
+          ],
+        },
+        {
+          id: 'ORINGS',
+          name: 'Nitrile Rubber O-Ring 50x3mm NBR 70A',
+          nationalCode: 'CNM-100023-005',
+          rates: [
+            { cpseName: 'IOCL (Haldia)', rate: 29.87, annualQty: 6500 },
+            { cpseName: 'HPCL (Visakh)', rate: 13.42, annualQty: 8200 },
+            { cpseName: 'CPCL (Manali)', rate: 24.5, annualQty: 3800 },
+            { cpseName: 'ONGC (Ankleshwar)', rate: 22.0, annualQty: 4500 },
+          ],
+        },
+      ];
+    }
+
+    const map = new Map<string, {
+      id: string;
+      name: string;
+      nationalCode: string;
+      rates: { cpseName: string; rate: number; annualQty: number }[];
+    }>();
+
+    for (const rec of records) {
+      const code = rec.groundTruthNationalCode || `CNM-${rec.groundTruthClusterId || rec.rowId}`;
+      const name = rec.groundTruthStandardName || rec.materialDescriptionRaw;
+      if (!map.has(code)) {
+        map.set(code, {
+          id: code,
+          name,
+          nationalCode: code,
+          rates: [],
+        });
+      }
+      const entry = map.get(code)!;
+      entry.rates.push({
+        cpseName: `${rec.cpseName} (${rec.plantLocation ? rec.plantLocation.split(',')[0].trim() : 'Plant'})`,
+        rate: Number(rec.avgUnitPriceINR) || 1000,
+        annualQty: Number(rec.annualProcuredQty) || 100,
+      });
+    }
+
+    const clustersWithMultiRates = Array.from(map.values()).filter((c) => c.rates.length >= 2);
+    return clustersWithMultiRates.length > 0
+      ? clustersWithMultiRates.slice(0, 25)
+      : Array.from(map.values()).slice(0, 10);
+  }, [records]);
+
   // Sourcing Simulation Dataset
   const scenarioData = useMemo(() => {
-    if (selectedCommodity === 'VALVES') {
-      return {
-        title: 'Ball Valve 2" Class 150# Flanged WCB/SS316 (CNM-100010-004)',
-        nationalCode: 'CNM-100010-004',
-        rates: [
-          { cpseName: 'CPCL (Manali)', rate: 14200, annualQty: 1200 },
-          { cpseName: 'IOCL (Panipat)', rate: 12800, annualQty: 4800 },
-          { cpseName: 'ONGC (Ankleshwar)', rate: 13400, annualQty: 2400 },
-          { cpseName: 'BPCL (Kochi)', rate: 13900, annualQty: 1600 },
-        ],
-      };
-    } else if (selectedCommodity === 'GASKETS') {
-      return {
-        title: 'Spiral Wound Gasket SS316 4" Class 150# (CNM-100001)',
-        nationalCode: 'CNM-100001',
-        rates: [
-          { cpseName: 'SAIL (Bhilai)', rate: 529.0, annualQty: 2400 },
-          { cpseName: 'CPCL (Cauvery)', rate: 495.0, annualQty: 800 },
-          { cpseName: 'IOCL (Haldia)', rate: 460.0, annualQty: 3200 },
-          { cpseName: 'HPCL (Visakh)', rate: 510.0, annualQty: 1400 },
-        ],
-      };
-    } else {
-      return {
-        title: 'Nitrile Rubber O-Ring 50x3mm NBR 70A (CNM-100023-005)',
-        nationalCode: 'CNM-100023-005',
-        rates: [
-          { cpseName: 'IOCL (Haldia)', rate: 29.87, annualQty: 6500 },
-          { cpseName: 'HPCL (Visakh)', rate: 13.42, annualQty: 8200 },
-          { cpseName: 'CPCL (Manali)', rate: 24.5, annualQty: 3800 },
-          { cpseName: 'ONGC (Ankleshwar)', rate: 22.0, annualQty: 4500 },
-        ],
-      };
-    }
-  }, [selectedCommodity]);
+    const found = availableCommodities.find((c) => c.id === selectedCommodity);
+    const target = found || availableCommodities[0];
+    return {
+      title: `${target.name} (${target.nationalCode})`,
+      nationalCode: target.nationalCode,
+      rates: target.rates,
+    };
+  }, [availableCommodities, selectedCommodity]);
 
   // Execute simulation API
   useEffect(() => {
@@ -183,6 +235,13 @@ export function ProcurementCockpitView({ records = [], currentUser }: Procuremen
     setTimeout(() => setDownloadSuccess(null), 3500);
   };
 
+  const handleSubmitRequest = () => {
+    setShowRequestModal(false);
+    setRequestStatus(`Request sent to Engineering Queue for Adjudication.`);
+    setTimeout(() => setRequestStatus(null), 4000);
+    setRequestDesc('');
+  };
+
   return (
     <div className="space-y-4">
       {/* Top Header Banner */}
@@ -247,8 +306,23 @@ export function ProcurementCockpitView({ records = [], currentUser }: Procuremen
               Supplier Rate Comparison
             </span>
           </button>
+          <div className="flex-1"></div>
+          <button
+            onClick={() => setShowRequestModal(true)}
+            className="bg-amber-100 hover:bg-amber-200 text-amber-800 border border-amber-300 px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-2xs font-bold transition-colors ml-auto mr-1"
+          >
+            <FilePlus className="w-3.5 h-3.5" />
+            Request Missing Item / New Master
+          </button>
         </div>
       </div>
+
+      {requestStatus && (
+        <div className="bg-emerald-50 text-emerald-700 border border-emerald-200 p-3 rounded-xl shadow-xs text-center font-mono text-xs font-semibold flex items-center justify-center gap-2 animate-fadeIn">
+          <CheckCircle2 className="w-4 h-4" />
+          {requestStatus}
+        </div>
+      )}
 
       {downloadSuccess && (
         <div className="bg-emerald-600 text-white p-3 rounded-xl shadow-xs text-center font-mono text-xs font-semibold flex items-center justify-center gap-2 animate-fadeIn">
@@ -267,11 +341,13 @@ export function ProcurementCockpitView({ records = [], currentUser }: Procuremen
               <select
                 value={selectedCommodity}
                 onChange={(e) => setSelectedCommodity(e.target.value)}
-                className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-900 cursor-pointer focus:outline-emerald-500"
+                className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-900 cursor-pointer focus:outline-emerald-500 max-w-md truncate"
               >
-                <option value="VALVES">Ball Valves 2" 150# (ASME B16.34)</option>
-                <option value="GASKETS">Spiral Wound Gaskets 4" 150# (ASME B16.20)</option>
-                <option value="ORINGS">Nitrile Rubber O-Rings 50x3mm (IS 3400)</option>
+                {availableCommodities.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.nationalCode} — {c.name} ({c.rates.length} CPSE Quotes)
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -557,26 +633,83 @@ export function ProcurementCockpitView({ records = [], currentUser }: Procuremen
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2 font-mono text-xs">
-                <span className="text-[10px] text-slate-400 uppercase font-bold block">BALL VALVES 2" 150#</span>
-                <div className="text-base font-bold text-slate-900">₹12,800 - ₹14,200</div>
-                <div className="text-[11px] text-slate-600">Spread: ₹1,400 / unit (10.9% variance)</div>
-                <div className="text-[10px] text-emerald-600 font-bold">Lowest: IOCL Panipat (₹12,800)</div>
+              {availableCommodities.slice(0, 3).map((item) => {
+                const rates = item.rates.map((r) => r.rate);
+                const minRate = rates.length ? Math.min(...rates) : 0;
+                const maxRate = rates.length ? Math.max(...rates) : 0;
+                const spread = maxRate - minRate;
+                const variance = minRate > 0 ? ((spread / minRate) * 100).toFixed(1) : '0';
+                const lowest = item.rates.find((r) => r.rate === minRate);
+                return (
+                  <div key={item.id} className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2 font-mono text-xs">
+                    <span className="text-[10px] text-slate-400 uppercase font-bold block truncate" title={item.name}>{item.name}</span>
+                    <div className="text-base font-bold text-slate-900">₹{minRate.toLocaleString()} - ₹{maxRate.toLocaleString()}</div>
+                    <div className="text-[11px] text-slate-600">Spread: ₹{spread.toLocaleString()} / unit ({variance}% variance)</div>
+                    <div className="text-[10px] text-emerald-600 font-bold">Lowest: {lowest?.cpseName || 'Benchmark'} (₹{minRate.toLocaleString()})</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+      {/* REQUEST MODAL */}
+      {showRequestModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm animate-fadeIn p-4">
+          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden flex flex-col">
+            <div className="flex justify-between items-center p-4 border-b border-slate-100 bg-slate-50/50">
+              <h3 className="font-bold text-slate-800 text-sm flex items-center gap-2">
+                <FilePlus className="w-4 h-4 text-amber-600" /> Request New Material Master
+              </h3>
+              <button
+                onClick={() => setShowRequestModal(false)}
+                className="text-slate-400 hover:text-slate-600 cursor-pointer p-1 rounded-md hover:bg-slate-200"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            
+            <div className="p-5 space-y-4">
+              <p className="text-xs text-slate-500">
+                If an item is missing from the National Registry, you can request Engineering to digitize a legacy OCR document or manually create a new master.
+              </p>
+              
+              <div>
+                <label className="block text-[11px] font-bold uppercase text-slate-500 mb-1.5 tracking-wider">
+                  Material Description / Specification
+                </label>
+                <textarea
+                  value={requestDesc}
+                  onChange={(e) => setRequestDesc(e.target.value)}
+                  placeholder="e.g. Spiral Wound Gasket SS316 10-inch 300# as per ASME B16.20"
+                  className="w-full border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50 resize-none h-24"
+                />
               </div>
 
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2 font-mono text-xs">
-                <span className="text-[10px] text-slate-400 uppercase font-bold block">SPIRAL GASKETS 4" 150#</span>
-                <div className="text-base font-bold text-slate-900">₹460 - ₹529</div>
-                <div className="text-[11px] text-slate-600">Spread: ₹69 / unit (15.0% variance)</div>
-                <div className="text-[10px] text-emerald-600 font-bold">Lowest: IOCL Haldia (₹460)</div>
+              <div>
+                <label className="block text-[11px] font-bold uppercase text-slate-500 mb-1.5 tracking-wider">
+                  Supporting Document (Optional)
+                </label>
+                <div className="w-full border border-dashed border-slate-300 rounded-xl p-3 text-center text-xs text-slate-400 cursor-pointer hover:bg-slate-50">
+                  + Click to Upload Legacy PO or Drawing PDF
+                </div>
               </div>
+            </div>
 
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2 font-mono text-xs">
-                <span className="text-[10px] text-slate-400 uppercase font-bold block">NITRILE O-RINGS 50X3MM</span>
-                <div className="text-base font-bold text-slate-900">₹13.42 - ₹29.87</div>
-                <div className="text-[11px] text-slate-600">Spread: ₹16.45 / unit (122.6% variance)</div>
-                <div className="text-[10px] text-emerald-600 font-bold">Lowest: HPCL Visakh (₹13.42)</div>
-              </div>
+            <div className="p-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-2">
+              <button
+                onClick={() => setShowRequestModal(false)}
+                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSubmitRequest}
+                disabled={!requestDesc.trim()}
+                className="px-4 py-2 bg-amber-600 hover:bg-amber-700 disabled:opacity-50 text-white rounded-lg text-xs font-bold shadow-xs cursor-pointer"
+              >
+                Submit Request
+              </button>
             </div>
           </div>
         </div>
