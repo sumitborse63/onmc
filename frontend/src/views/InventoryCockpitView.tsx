@@ -257,7 +257,7 @@ export function InventoryCockpitView({ records = [], currentUser }: InventoryCoc
             <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-xs font-mono text-xs">
               <span className="text-slate-400 uppercase font-bold block text-[10px]">REFINERY ENTITIES INVOLVED</span>
               <strong className="text-slate-900 text-lg mt-0.5 block">CPCL, IOCL, ONGC, BPCL, SAIL</strong>
-              <span className="text-[11px] text-indigo-600 font-medium">Active Federated Sharing</span>
+              <span className="text-[11px] text-blue-600 font-medium">Active Federated Sharing</span>
             </div>
           </div>
 
@@ -265,9 +265,9 @@ export function InventoryCockpitView({ records = [], currentUser }: InventoryCoc
           <div className="flex gap-2 text-xs font-semibold">
             <button
               onClick={() => setFilterType('ALL')}
-              className={`px-3 py-1.5 rounded-lg cursor-pointer transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
                 filterType === 'ALL'
-                  ? 'bg-slate-900 text-white shadow-xs'
+                  ? 'bg-blue-600 text-white shadow-xs'
                   : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
               }`}
             >
@@ -275,9 +275,9 @@ export function InventoryCockpitView({ records = [], currentUser }: InventoryCoc
             </button>
             <button
               onClick={() => setFilterType('EXACT_DUPLICATE')}
-              className={`px-3 py-1.5 rounded-lg cursor-pointer transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
                 filterType === 'EXACT_DUPLICATE'
-                  ? 'bg-rose-600 text-white shadow-xs'
+                  ? 'bg-blue-600 text-white shadow-xs'
                   : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
               }`}
             >
@@ -285,9 +285,9 @@ export function InventoryCockpitView({ records = [], currentUser }: InventoryCoc
             </button>
             <button
               onClick={() => setFilterType('NEAR_DUPLICATE')}
-              className={`px-3 py-1.5 rounded-lg cursor-pointer transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
                 filterType === 'NEAR_DUPLICATE'
-                  ? 'bg-amber-600 text-white shadow-xs'
+                  ? 'bg-blue-600 text-white shadow-xs'
                   : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
               }`}
             >
@@ -295,9 +295,9 @@ export function InventoryCockpitView({ records = [], currentUser }: InventoryCoc
             </button>
             <button
               onClick={() => setFilterType('FUNCTIONALLY_EQUIVALENT')}
-              className={`px-3 py-1.5 rounded-lg cursor-pointer transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
                 filterType === 'FUNCTIONALLY_EQUIVALENT'
-                  ? 'bg-indigo-600 text-white shadow-xs'
+                  ? 'bg-blue-600 text-white shadow-xs'
                   : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
               }`}
             >
@@ -314,18 +314,18 @@ export function InventoryCockpitView({ records = [], currentUser }: InventoryCoc
                   onClick={() => setSelectedCluster(cluster)}
                   className={`p-4 rounded-2xl border transition-all cursor-pointer ${
                     selectedCluster?.clusterId === cluster.clusterId
-                      ? 'bg-amber-50/40 border-amber-400 shadow-xs ring-1 ring-amber-400'
+                      ? 'bg-blue-50/50 border-blue-400 shadow-xs ring-1 ring-blue-400'
                       : 'bg-white border-slate-200 hover:border-slate-300'
                   }`}
                 >
                   <div className="flex justify-between items-center text-xs">
                     <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono ${
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono border ${
                         cluster.classification === 'EXACT_DUPLICATE'
-                          ? 'bg-rose-100 text-rose-700'
+                          ? 'bg-rose-50 text-rose-700 border-rose-200'
                           : cluster.classification === 'NEAR_DUPLICATE'
-                          ? 'bg-amber-100 text-amber-700'
-                          : 'bg-indigo-100 text-indigo-700'
+                          ? 'bg-amber-50 text-amber-700 border-amber-200'
+                          : 'bg-blue-50 text-blue-700 border-blue-200'
                       }`}
                     >
                       {cluster.classification.replace('_', ' ')}

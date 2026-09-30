@@ -33,7 +33,7 @@ export function PriceDispersionChart({
     <div className="w-full bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col">
       <div className="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
         <span className="text-xs font-semibold text-slate-800 flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
+          <span className="w-2 h-2 rounded-full bg-blue-600"></span>
           Historical Purchase Price Dispersion Curve
         </span>
         <span className="text-xs font-mono font-medium text-slate-600 truncate max-w-[240px]">

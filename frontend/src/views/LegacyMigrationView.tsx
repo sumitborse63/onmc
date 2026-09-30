@@ -150,7 +150,7 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
     if (!selectedFile) return;
 
     setIsUploading(true);
-    setStatusMessage('Uploading historical record to Agent 2 Edge Ingestion...');
+    setStatusMessage('Uploading historical record to Ingestion Pipeline...');
 
     try {
       // 1. Upload
@@ -264,11 +264,11 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-bold text-slate-900 tracking-tight">
-              Agent 2: Legacy Migration & Multimodal OCR
+              Legacy Catalog Migration & Multimodal OCR
             </h1>
-            <Cpu className="w-5 h-5 text-indigo-600" />
-            <span className="text-[10px] font-mono font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded-md">
-              IEEE 830 / ISO 29148 COMPLIANT
+            <Cpu className="w-5 h-5 text-blue-600" />
+            <span className="text-[10px] font-mono font-bold bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-md">
+              ISO 29148 COMPLIANT
             </span>
           </div>
           <p className="text-xs text-slate-500 font-normal mt-0.5">
@@ -284,12 +284,12 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
       </div>
 
       {statusMessage && (
-        <div className="bg-indigo-900 text-indigo-100 px-4 py-3 rounded-xl shadow-xs font-mono text-xs flex items-center justify-between gap-3 animate-fadeIn border border-indigo-700">
+        <div className="bg-slate-900 text-slate-100 px-4 py-3 rounded-xl shadow-xs font-mono text-xs flex items-center justify-between gap-3 animate-fadeIn border border-slate-800">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-rose-400" />
+            <Sparkles className="w-4 h-4 text-blue-400" />
             <span>{statusMessage}</span>
           </div>
-          <button onClick={() => setStatusMessage(null)} className="text-indigo-300 hover:text-white cursor-pointer">
+          <button onClick={() => setStatusMessage(null)} className="text-slate-400 hover:text-white cursor-pointer">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -301,7 +301,7 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
         <div className="col-span-12 lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-5">
           <div className="flex justify-between items-center border-b border-slate-100 pb-3">
             <span className="text-xs font-bold text-slate-900 uppercase flex items-center gap-2">
-              <UploadCloud className="w-4 h-4 text-rose-600" />
+              <UploadCloud className="w-4 h-4 text-blue-600" />
               Upload Historical Material Records
             </span>
             <div className="flex items-center gap-2 text-xs font-mono">
@@ -346,7 +346,7 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
             onDragOver={e => e.preventDefault()}
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-slate-300 hover:border-rose-500 bg-slate-50/60 hover:bg-rose-50/20 rounded-xl p-8 text-center cursor-pointer transition-all space-y-3"
+            className="border-2 border-dashed border-slate-300 hover:border-blue-500 bg-slate-50/60 hover:bg-blue-50/20 rounded-xl p-8 text-center cursor-pointer transition-all space-y-3"
           >
             <input
               type="file"
@@ -355,14 +355,14 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
               accept=".jpg,.jpeg,.png,.tiff,.tif,.bmp,.pdf,.csv,.xls,.xlsx"
               className="hidden"
             />
-            <div className="w-12 h-12 mx-auto rounded-full bg-rose-100 text-rose-600 flex items-center justify-center">
+            <div className="w-12 h-12 mx-auto rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
               <UploadCloud className="w-6 h-6" />
             </div>
 
             <div>
               <p className="text-xs font-semibold text-slate-800">
                 {selectedFile ? (
-                  <span className="text-rose-600 font-bold font-mono">{selectedFile.name} ({(selectedFile.size / 1024).toFixed(1)} KB)</span>
+                  <span className="text-blue-700 font-bold font-mono">{selectedFile.name} ({(selectedFile.size / 1024).toFixed(1)} KB)</span>
                 ) : (
                   'Drag & drop material records here, or click to browse'
                 )}
@@ -376,17 +376,17 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
           {/* Quick Demo Pre-sets */}
           <div className="space-y-2 pt-1">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wide block">
-              Quick Prototype Demo Presets:
+              Standard Benchmark Samples:
             </span>
             <div className="grid grid-cols-3 gap-2 text-xs font-mono">
               <button
                 type="button"
                 onClick={() => handleLoadSample('PRINTED')} disabled={currentUser?.role !== 'CPSE_MANAGEMENT'}
-                className="p-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-indigo-50 hover:border-indigo-300 text-left transition-all cursor-pointer"
+                className="p-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 text-left transition-all cursor-pointer"
               >
                 <div className="flex items-center gap-1.5 font-bold text-slate-800 text-[11px]">
-                  <FileText className="w-3.5 h-3.5 text-indigo-600" />
-                  Test Image 1
+                  <FileText className="w-3.5 h-3.5 text-blue-600" />
+                  Sample 1
                 </div>
                 <span className="text-[10px] text-slate-500 block truncate mt-0.5">Printed Material Master</span>
               </button>
@@ -394,11 +394,11 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
               <button
                 type="button"
                 onClick={() => handleLoadSample('HANDWRITTEN')} disabled={currentUser?.role !== 'CPSE_MANAGEMENT'}
-                className="p-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-rose-50 hover:border-rose-300 text-left transition-all cursor-pointer"
+                className="p-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 text-left transition-all cursor-pointer"
               >
                 <div className="flex items-center gap-1.5 font-bold text-slate-800 text-[11px]">
-                  <Edit3 className="w-3.5 h-3.5 text-rose-600" />
-                  Test Image 2
+                  <Edit3 className="w-3.5 h-3.5 text-blue-600" />
+                  Sample 2
                 </div>
                 <span className="text-[10px] text-slate-500 block truncate mt-0.5">Handwritten Register</span>
               </button>
@@ -410,7 +410,7 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
               >
                 <div className="flex items-center gap-1.5 font-bold text-slate-800 text-[11px]">
                   <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
-                  Legacy CSV
+                  Sample CSV
                 </div>
                 <span className="text-[10px] text-slate-500 block truncate mt-0.5">Refinery MM Dump</span>
               </button>
@@ -425,7 +425,7 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
             <button
               onClick={handleStartMigration}
               disabled={!selectedFile || isUploading}
-              className="btn-stitch bg-rose-600 hover:bg-rose-500 disabled:opacity-50 text-white px-6 py-2.5 text-xs font-semibold rounded-xl flex items-center gap-2 shadow-xs cursor-pointer"
+              className="btn-stitch bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-6 py-2.5 text-xs font-semibold rounded-xl flex items-center gap-2 shadow-xs cursor-pointer"
             >
               {isUploading ? (
                 <>
@@ -460,7 +460,7 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
           {currentJob && (
             <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
               <div
-                className="bg-gradient-to-r from-indigo-500 to-rose-500 h-2 transition-all duration-500"
+                className="bg-gradient-to-r from-blue-600 to-emerald-500 h-2 transition-all duration-500"
                 style={{ width: `${currentJob.processing_progress}%` }}
               />
             </div>
@@ -491,13 +491,13 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
                     isDone
                       ? 'bg-emerald-950/40 border-emerald-800/80 text-emerald-200'
                       : isActive
-                      ? 'bg-rose-950/40 border-rose-700 text-rose-200 animate-pulse'
+                      ? 'bg-blue-950/40 border-blue-700 text-blue-200 animate-pulse'
                       : 'bg-slate-800/40 border-slate-800 text-slate-400'
                   }`}
                 >
                   <div className="flex items-center gap-2">
                     <span className={`w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-bold ${
-                      isDone ? 'bg-emerald-600 text-white' : isActive ? 'bg-rose-600 text-white' : 'bg-slate-700 text-slate-400'
+                      isDone ? 'bg-emerald-600 text-white' : isActive ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-400'
                     }`}>
                       {isDone ? '✓' : st.id}
                     </span>
@@ -606,7 +606,7 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
                   placeholder="Search code, grade, spec..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-900 focus:outline-rose-500 w-48"
+                  className="bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-900 focus:outline-blue-500 w-48"
                 />
               </div>
 
@@ -719,7 +719,7 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
                             setEditFields(rec);
                           }}
                           disabled={currentUser?.role !== 'CPSE_MANAGEMENT' && currentUser?.role !== 'ENGINEERING_EXPERT'}
-                          className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-md cursor-pointer transition-colors disabled:opacity-30"
+                          className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-md cursor-pointer transition-colors disabled:opacity-30"
                           title="Review / Edit Record"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
@@ -838,7 +838,7 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
                       type="text"
                       value={editFields.legacy_material_code || ''}
                       onChange={e => setEditFields({ ...editFields, legacy_material_code: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 mt-1 text-xs font-bold text-slate-900 focus:outline-rose-500"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 mt-1 text-xs font-bold text-slate-900 focus:outline-blue-500"
                     />
                   </label>
 
@@ -848,7 +848,7 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
                       type="text"
                       value={editFields.material_group || ''}
                       onChange={e => setEditFields({ ...editFields, material_group: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 mt-1 text-xs font-bold text-slate-900 focus:outline-rose-500"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 mt-1 text-xs font-bold text-slate-900 focus:outline-blue-500"
                     />
                   </label>
                 </div>
@@ -859,7 +859,7 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
                     rows={2}
                     value={editFields.material_description || ''}
                     onChange={e => setEditFields({ ...editFields, material_description: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 mt-1 text-xs font-medium text-slate-900 focus:outline-rose-500"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 mt-1 text-xs font-medium text-slate-900 focus:outline-blue-500"
                   />
                 </label>
 
@@ -870,7 +870,7 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
                       type="text"
                       value={editFields.material_grade || ''}
                       onChange={e => setEditFields({ ...editFields, material_grade: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 mt-1 text-xs text-slate-900 focus:outline-rose-500"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 mt-1 text-xs text-slate-900 focus:outline-blue-500"
                     />
                   </label>
 
@@ -880,7 +880,7 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
                       type="text"
                       value={editFields.dimensions || ''}
                       onChange={e => setEditFields({ ...editFields, dimensions: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 mt-1 text-xs text-slate-900 focus:outline-rose-500"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 mt-1 text-xs text-slate-900 focus:outline-blue-500"
                     />
                   </label>
 
@@ -890,7 +890,7 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
                       type="text"
                       value={editFields.pressure_class || ''}
                       onChange={e => setEditFields({ ...editFields, pressure_class: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 mt-1 text-xs text-slate-900 focus:outline-rose-500"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 mt-1 text-xs text-slate-900 focus:outline-blue-500"
                     />
                   </label>
                 </div>
@@ -902,7 +902,7 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
                       type="text"
                       value={editFields.standard || ''}
                       onChange={e => setEditFields({ ...editFields, standard: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 mt-1 text-xs text-slate-900 focus:outline-rose-500"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 mt-1 text-xs text-slate-900 focus:outline-blue-500"
                     />
                   </label>
 
@@ -912,7 +912,7 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
                       type="number"
                       value={editFields.quantity ?? ''}
                       onChange={e => setEditFields({ ...editFields, quantity: Number(e.target.value) })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 mt-1 text-xs text-slate-900 focus:outline-rose-500"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 mt-1 text-xs text-slate-900 focus:outline-blue-500"
                     />
                   </label>
 
@@ -922,7 +922,7 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
                       type="number"
                       value={editFields.unit_price ?? ''}
                       onChange={e => setEditFields({ ...editFields, unit_price: Number(e.target.value) })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 mt-1 text-xs text-slate-900 focus:outline-rose-500"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 mt-1 text-xs text-slate-900 focus:outline-blue-500"
                     />
                   </label>
                 </div>
@@ -947,7 +947,7 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
                 </button>
                 <button
                   onClick={handleSaveReview}
-                  className="px-5 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-lg cursor-pointer flex items-center gap-1.5 shadow-xs"
+                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg cursor-pointer flex items-center gap-1.5 shadow-xs"
                 >
                   <Check className="w-4 h-4" /> Save & Approve
                 </button>
@@ -962,7 +962,7 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
         <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-3 font-mono text-xs">
           <div className="flex justify-between items-center border-b border-slate-100 pb-3">
             <span className="font-bold text-slate-900 uppercase flex items-center gap-2">
-              <Clock className="w-4 h-4 text-indigo-600" />
+              <Clock className="w-4 h-4 text-blue-600" />
               Legacy Migration Job Registry
             </span>
             <span className="text-slate-400 text-[11px]">{allJobs.length} Jobs Recorded</span>
@@ -976,7 +976,7 @@ export function LegacyMigrationView({ currentUser }: LegacyMigrationViewProps) {
                     job.processing_status === 'IMPORTED'
                       ? 'bg-emerald-100 text-emerald-800'
                       : job.processing_status === 'APPROVED'
-                      ? 'bg-indigo-100 text-indigo-800'
+                      ? 'bg-blue-100 text-blue-800'
                       : 'bg-amber-100 text-amber-800'
                   }`}>
                     {job.processing_status}

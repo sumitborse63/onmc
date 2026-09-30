@@ -37,6 +37,7 @@ import {
   FileText,
   ShieldAlert,
   UploadCloud,
+  Layers,
   Search,
   Bookmark,
   Building2,
@@ -205,15 +206,15 @@ export function App() {
 
   return (
     <div className="min-h-[100dvh] bg-slate-100 text-slate-900 font-sans antialiased flex flex-col selection:bg-blue-600 selection:text-white">
-      {/* SECTION 1 — TOP ENTERPRISE HEADER (Matching Reference Exactly) */}
-      <header className="bg-[#0b1120] text-white border-b border-slate-800/80 px-6 py-2.5 sticky top-0 z-40 shadow-sm w-full">
+      {/* SECTION 1 — TOP ENTERPRISE HEADER */}
+      <header className="bg-[#0B1120] text-white border-b border-slate-800 px-6 py-2.5 sticky top-0 z-40 shadow-xs w-full">
         <div className="w-full flex items-center justify-between gap-4">
           {/* Left Branding: MoPNG Lion Emblem & Titles */}
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2.5">
               {/* National Emblem SVG / Badge */}
-              <div className="w-8 h-9 flex flex-col items-center justify-center text-amber-400 font-serif">
-                <svg viewBox="0 0 24 24" className="w-7 h-7 fill-amber-400">
+              <div className="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-blue-400 font-serif shadow-2xs">
+                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current text-blue-400">
                   <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/>
                 </svg>
               </div>
@@ -223,7 +224,7 @@ export function App() {
               </div>
             </div>
 
-            <div className="h-6 w-px bg-slate-700/60 hidden sm:block" />
+            <div className="h-6 w-px bg-slate-800 hidden sm:block" />
 
             <div className="hidden md:block leading-tight">
               <div className="font-bold text-xs text-white tracking-tight">
@@ -243,24 +244,21 @@ export function App() {
                 {currentUser.role === 'SUPER_ADMIN' && activeTab !== 'ADMIN_PORTAL' && (
                   <button
                     onClick={() => setActiveTab('ADMIN_PORTAL')}
-                    className="flex items-center gap-1.5 bg-gradient-to-r from-rose-600 to-indigo-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm hover:from-rose-500 hover:to-indigo-500 transition-all cursor-pointer ring-1 ring-white/20"
+                    className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-700 transition-all cursor-pointer shadow-2xs"
                     title="Return to National Admin Portal"
                   >
-                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
                     <span>Admin Portal</span>
                   </button>
                 )}
                 <button
                   onClick={() => setIsAuthModalOpen(true)}
-                  className="flex items-center gap-2 bg-[#1e293b] hover:bg-slate-700/80 border border-slate-700/80 px-3 py-1.5 rounded-lg text-left transition-all cursor-pointer text-xs"
+                  className="flex items-center gap-2 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/80 px-3 py-1.5 rounded-lg text-left transition-all cursor-pointer text-xs"
                 >
                   <span className="text-[10px] text-slate-400 uppercase font-semibold">Role:</span>
-                  <span className="w-4 h-4 rounded-full bg-blue-600 flex items-center justify-center text-[10px]">
-                    🌐
-                  </span>
                   <span className="font-semibold text-slate-200 text-xs">
                     {currentUser.role === 'SUPER_ADMIN'
-                      ? '👑 National Admin Portal'
+                      ? 'National Admin Portal'
                       : currentUser.role === 'MOPNG_GOVERNMENT'
                       ? 'MoPNG Government'
                       : currentUser.role === 'CPSE_MANAGEMENT'
@@ -276,13 +274,10 @@ export function App() {
               </div>
             )}
 
-
-            {/* Notification Bell with Badge */}
-            <div className="relative cursor-pointer p-1.5 text-slate-400 hover:text-white transition-colors">
+            {/* Notification Bell with Subtle Unread Dot */}
+            <div className="relative cursor-pointer p-1.5 text-slate-400 hover:text-white transition-colors" title="Notifications">
               <Bell className="w-4 h-4" />
-              <span className="absolute top-0 right-0 bg-red-600 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                12
-              </span>
+              <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-blue-500 ring-2 ring-[#0B1120]" />
             </div>
 
             {/* Help Icon */}
@@ -291,20 +286,24 @@ export function App() {
             </div>
 
             {/* Security / Governance Shield */}
-            <div className="cursor-pointer p-1.5 text-slate-400 hover:text-white transition-colors" title="Cryptographic SHA-256 Merkle Ledger Live">
+            <div className="cursor-pointer p-1.5 text-slate-400 hover:text-white transition-colors" title="Cryptographic SHA-256 Merkle Ledger Active">
               <Shield className="w-4 h-4 text-emerald-400" />
             </div>
 
             {/* User Profile Avatar & Name + Logout Button */}
             {currentUser ? (
-              <div className="flex items-center gap-2 pl-2 border-l border-slate-700/80">
+              <div className="flex items-center gap-2 pl-2 border-l border-slate-800">
                 <div
                   onClick={() => setIsAuthModalOpen(true)}
                   className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
                   title="Switch Persona / View Profile"
                 >
-                  <div className="w-7 h-7 rounded-full bg-slate-700 text-white flex items-center justify-center font-bold text-xs">
-                    <User className="w-4 h-4 text-slate-300" />
+                  <div className="w-7 h-7 rounded-full bg-slate-800 text-slate-200 border border-slate-700 flex items-center justify-center font-bold text-xs">
+                    {currentUser.name
+                      .split(' ')
+                      .map((n) => n[0])
+                      .join('')
+                      .slice(0, 2)}
                   </div>
                   <div className="hidden lg:block text-xs font-semibold text-slate-200">
                     {currentUser.name}
@@ -313,17 +312,17 @@ export function App() {
 
                 <button
                   onClick={handleLogout}
-                  className="ml-2 flex items-center gap-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 hover:text-white border border-rose-500/30 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer shadow-xs"
+                  className="ml-2 flex items-center gap-1.5 bg-slate-800 hover:bg-rose-950/40 text-slate-300 hover:text-rose-300 border border-slate-700/80 hover:border-rose-900/50 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer shadow-2xs"
                   title="Sign out of current account"
                 >
-                  <LogOut className="w-3.5 h-3.5 text-rose-400" />
+                  <LogOut className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Logout</span>
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-2 pl-2 border-l border-slate-700/80 text-xs text-slate-400 font-mono">
-                <Shield className="w-3.5 h-3.5 text-rose-400" />
-                <span className="hidden sm:inline">Official Access Portal</span>
+              <div className="flex items-center gap-2 pl-2 border-l border-slate-800 text-xs text-slate-400 font-mono">
+                <Shield className="w-3.5 h-3.5 text-blue-400" />
+                <span className="hidden sm:inline">Official Access Gateway</span>
               </div>
             )}
           </div>
@@ -342,15 +341,15 @@ export function App() {
         </section>
       ) : (
         <div className="flex-1 flex w-full">
-          {/* SECTION 2 — LEFT ENTERPRISE SIDEBAR (Matching Reference Exactly) */}
-          <aside className="w-64 bg-[#0b1120] text-slate-300 border-r border-slate-800/80 flex flex-col flex-shrink-0 z-30 font-sans">
+          {/* SECTION 2 — LEFT ENTERPRISE SIDEBAR */}
+          <aside className="w-64 bg-[#0B1120] text-slate-300 border-r border-slate-800 flex flex-col flex-shrink-0 z-30 font-sans">
             {/* Top Overview Dashboard */}
             <div className="p-3 pb-1">
               <button
                 onClick={() => setActiveTab('REGISTRY')}
                 className={`w-full p-2.5 rounded-lg flex items-center gap-3 transition-all cursor-pointer text-left text-xs ${
                   activeTab === 'OVERVIEW'
-                    ? 'bg-blue-600 text-white font-bold'
+                    ? 'bg-blue-600 text-white font-bold shadow-xs'
                     : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
                 }`}
               >
@@ -359,41 +358,59 @@ export function App() {
               </button>
             </div>
 
-            {/* Numbered Navigation Tabs List Matching Reference */}
+            {/* Navigation Tabs List */}
             <div className="px-3 py-1 space-y-1 flex-1 overflow-y-auto text-xs">
-              {/* [0] Unified Admin Portal (Accessible to Super Admin) */}
+              {/* Unified Admin Portal (Accessible to Super Admin) */}
               {isTabPermitted('ADMIN_PORTAL') && (
                 <button
                   onClick={() => setActiveTab('ADMIN_PORTAL')}
-                  className={`w-full p-2.5 rounded-xl flex items-start gap-3 transition-all cursor-pointer text-left mb-2 border ${
+                  className={`w-full p-2.5 rounded-xl flex items-center gap-3 transition-all cursor-pointer text-left mb-2 border ${
                     activeTab === 'ADMIN_PORTAL'
-                      ? 'bg-gradient-to-r from-rose-700 via-indigo-700 to-indigo-800 text-white font-bold shadow-md border-rose-500/50'
-                      : 'bg-indigo-950/40 text-indigo-200 border-indigo-900/60 hover:bg-indigo-900/40 hover:text-white'
+                      ? 'bg-blue-600 text-white font-bold shadow-sm border-blue-500'
+                      : 'bg-slate-850 text-slate-200 border-slate-700/80 hover:bg-slate-800 hover:text-white'
                   }`}
                 >
-                  <div className="w-5 h-5 rounded bg-rose-600 text-white flex items-center justify-center text-[10px] font-mono font-bold mt-0.5 shadow-2xs">
-                    ★
+                  <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs ${
+                    activeTab === 'ADMIN_PORTAL' ? 'bg-blue-700 text-white' : 'bg-slate-800 text-slate-300 border border-slate-700'
+                  }`}>
+                    <ShieldCheck className="w-3.5 h-3.5" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-xs leading-tight flex items-center gap-1.5">
-                      <span>Admin Portal</span>
-                      <span className="text-[8px] bg-rose-500/30 text-rose-300 px-1 py-0.2 rounded font-mono font-bold">
-                        CONTROL
-                      </span>
-                    </div>
-                    <div className="text-[10px] text-indigo-300/80 font-normal truncate">
+                    <div className="font-semibold text-xs leading-tight">Admin Portal</div>
+                    <div className="text-[10px] text-slate-400 font-normal truncate">
                       Role Assignment &amp; Auth
                     </div>
                   </div>
                 </button>
               )}
 
-              {/* [1] Reviewer Portal */}
+              {/* National Registry */}
+              <button
+                onClick={() => setActiveTab('REGISTRY')}
+                className={`w-full p-2.5 rounded-lg flex items-center gap-3 transition-all cursor-pointer text-left ${
+                  activeTab === 'REGISTRY'
+                    ? 'bg-blue-600 text-white font-bold shadow-xs'
+                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
+                }`}
+              >
+                <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs ${
+                  activeTab === 'REGISTRY' ? 'bg-blue-700 text-white' : 'bg-slate-800 text-slate-400'
+                }`}>
+                  <Layers className="w-3.5 h-3.5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold text-xs leading-tight">National Registry</div>
+                  <div className={`text-[10px] truncate ${activeTab === 'REGISTRY' ? 'text-blue-100 font-normal' : 'text-slate-400'}`}>
+                    Catalog &amp; Master Explorer
+                  </div>
+                </div>
+              </button>
+
+              {/* Reviewer Portal */}
               <button
                 onClick={() => isTabPermitted('REVIEWER') && setActiveTab('REVIEWER')}
-
                 disabled={!isTabPermitted('REVIEWER')}
-                className={`w-full p-2.5 rounded-lg flex items-start gap-3 transition-all cursor-pointer text-left ${
+                className={`w-full p-2.5 rounded-lg flex items-center gap-3 transition-all cursor-pointer text-left ${
                   activeTab === 'REVIEWER'
                     ? 'bg-blue-600 text-white font-bold shadow-xs'
                     : isTabPermitted('REVIEWER')
@@ -401,43 +418,23 @@ export function App() {
                     : 'text-slate-600 opacity-40 cursor-not-allowed'
                 }`}
               >
-                <div className="w-5 h-5 rounded bg-slate-800 text-slate-300 flex items-center justify-center text-[10px] font-mono font-bold mt-0.5">
-                  1
+                <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs ${
+                  activeTab === 'REVIEWER' ? 'bg-blue-700 text-white' : 'bg-slate-800 text-slate-400'
+                }`}>
+                  <CheckSquare className="w-3.5 h-3.5" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold text-xs leading-tight">Reviewer Portal</div>
-                  <div className="text-[10px] text-slate-400 font-normal truncate">Engineering Adjudication</div>
+                  <div className="text-[10px] text-slate-400 font-normal truncate">Technical Adjudication</div>
                 </div>
-                {!isTabPermitted('REVIEWER') && <Lock className="w-3 h-3 text-slate-600 mt-1" />}
+                {!isTabPermitted('REVIEWER') && <Lock className="w-3 h-3 text-slate-600 ml-auto" />}
               </button>
 
-              {/* [2] National Registry (One Nation, One Code) — Blue Active Style */}
-              <button
-                onClick={() => setActiveTab('REGISTRY')}
-                className={`w-full p-2.5 rounded-lg flex items-start gap-3 transition-all cursor-pointer text-left ${
-                  activeTab === 'REGISTRY'
-                    ? 'bg-blue-600 text-white font-bold shadow-md'
-                    : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
-                }`}
-              >
-                <div className={`w-5 h-5 rounded flex items-center justify-center text-[10px] font-mono font-bold mt-0.5 ${
-                  activeTab === 'REGISTRY' ? 'bg-blue-700 text-white' : 'bg-slate-800 text-slate-300'
-                }`}>
-                  2
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-xs leading-tight">National Registry</div>
-                  <div className={`text-[10px] truncate ${activeTab === 'REGISTRY' ? 'text-blue-100 font-normal' : 'text-slate-400'}`}>
-                    One Nation, One Code
-                  </div>
-                </div>
-              </button>
-
-              {/* [3] Duplicate & Cluster Analytics */}
+              {/* Duplicate & Cluster Analytics */}
               <button
                 onClick={() => isTabPermitted('DUPLICATES') && setActiveTab('DUPLICATES')}
                 disabled={!isTabPermitted('DUPLICATES')}
-                className={`w-full p-2.5 rounded-lg flex items-start gap-3 transition-all cursor-pointer text-left ${
+                className={`w-full p-2.5 rounded-lg flex items-center gap-3 transition-all cursor-pointer text-left ${
                   activeTab === 'DUPLICATES'
                     ? 'bg-blue-600 text-white font-bold shadow-xs'
                     : isTabPermitted('DUPLICATES')
@@ -445,21 +442,23 @@ export function App() {
                     : 'text-slate-600 opacity-40 cursor-not-allowed'
                 }`}
               >
-                <div className="w-5 h-5 rounded bg-slate-800 text-slate-300 flex items-center justify-center text-[10px] font-mono font-bold mt-0.5">
-                  3
+                <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs ${
+                  activeTab === 'DUPLICATES' ? 'bg-blue-700 text-white' : 'bg-slate-800 text-slate-400'
+                }`}>
+                  <Copy className="w-3.5 h-3.5" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold text-xs leading-tight">Duplicate &amp; Cluster</div>
                   <div className="text-[10px] text-slate-400 font-normal truncate">Analytics &amp; Stock Pooling</div>
                 </div>
-                {!isTabPermitted('DUPLICATES') && <Lock className="w-3 h-3 text-slate-600 mt-1" />}
+                {!isTabPermitted('DUPLICATES') && <Lock className="w-3 h-3 text-slate-600 ml-auto" />}
               </button>
 
-              {/* [4] Strategic Sourcing Simulator */}
+              {/* Strategic Sourcing Simulator */}
               <button
                 onClick={() => isTabPermitted('SIMULATOR') && setActiveTab('SIMULATOR')}
                 disabled={!isTabPermitted('SIMULATOR')}
-                className={`w-full p-2.5 rounded-lg flex items-start gap-3 transition-all cursor-pointer text-left ${
+                className={`w-full p-2.5 rounded-lg flex items-center gap-3 transition-all cursor-pointer text-left ${
                   activeTab === 'SIMULATOR'
                     ? 'bg-blue-600 text-white font-bold shadow-xs'
                     : isTabPermitted('SIMULATOR')
@@ -467,21 +466,23 @@ export function App() {
                     : 'text-slate-600 opacity-40 cursor-not-allowed'
                 }`}
               >
-                <div className="w-5 h-5 rounded bg-slate-800 text-slate-300 flex items-center justify-center text-[10px] font-mono font-bold mt-0.5">
-                  4
+                <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs ${
+                  activeTab === 'SIMULATOR' ? 'bg-blue-700 text-white' : 'bg-slate-800 text-slate-400'
+                }`}>
+                  <TrendingUp className="w-3.5 h-3.5" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold text-xs leading-tight">Strategic Sourcing</div>
-                  <div className="text-[10px] text-slate-400 font-normal truncate">Simulator</div>
+                  <div className="text-[10px] text-slate-400 font-normal truncate">Demand Aggregation &amp; MSE</div>
                 </div>
-                {!isTabPermitted('SIMULATOR') && <Lock className="w-3 h-3 text-slate-600 mt-1" />}
+                {!isTabPermitted('SIMULATOR') && <Lock className="w-3 h-3 text-slate-600 ml-auto" />}
               </button>
 
-              {/* [5] Legacy OCR Inspector */}
+              {/* Legacy OCR Inspector */}
               <button
                 onClick={() => isTabPermitted('OCR') && setActiveTab('OCR')}
                 disabled={!isTabPermitted('OCR')}
-                className={`w-full p-2.5 rounded-lg flex items-start gap-3 transition-all cursor-pointer text-left ${
+                className={`w-full p-2.5 rounded-lg flex items-center gap-3 transition-all cursor-pointer text-left ${
                   activeTab === 'OCR'
                     ? 'bg-blue-600 text-white font-bold shadow-xs'
                     : isTabPermitted('OCR')
@@ -489,21 +490,23 @@ export function App() {
                     : 'text-slate-600 opacity-40 cursor-not-allowed'
                 }`}
               >
-                <div className="w-5 h-5 rounded bg-slate-800 text-slate-300 flex items-center justify-center text-[10px] font-mono font-bold mt-0.5">
-                  5
+                <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs ${
+                  activeTab === 'OCR' ? 'bg-blue-700 text-white' : 'bg-slate-800 text-slate-400'
+                }`}>
+                  <FileText className="w-3.5 h-3.5" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-xs leading-tight">Legacy OCR Inspector</div>
-                  <div className="text-[10px] text-slate-400 font-normal truncate">(Agent 2 Multimodal)</div>
+                  <div className="font-semibold text-xs leading-tight">Legacy Document OCR</div>
+                  <div className="text-[10px] text-slate-400 font-normal truncate">Drawing &amp; P&amp;ID Extraction</div>
                 </div>
-                {!isTabPermitted('OCR') && <Lock className="w-3 h-3 text-slate-600 mt-1" />}
+                {!isTabPermitted('OCR') && <Lock className="w-3 h-3 text-slate-600 ml-auto" />}
               </button>
 
-              {/* [6] Vigilance & Drift Monitor */}
+              {/* Vigilance & Drift Monitor */}
               <button
                 onClick={() => isTabPermitted('VIGILANCE') && setActiveTab('VIGILANCE')}
                 disabled={!isTabPermitted('VIGILANCE')}
-                className={`w-full p-2.5 rounded-lg flex items-start gap-3 transition-all cursor-pointer text-left ${
+                className={`w-full p-2.5 rounded-lg flex items-center gap-3 transition-all cursor-pointer text-left ${
                   activeTab === 'VIGILANCE'
                     ? 'bg-blue-600 text-white font-bold shadow-xs'
                     : isTabPermitted('VIGILANCE')
@@ -511,21 +514,23 @@ export function App() {
                     : 'text-slate-600 opacity-40 cursor-not-allowed'
                 }`}
               >
-                <div className="w-5 h-5 rounded bg-slate-800 text-slate-300 flex items-center justify-center text-[10px] font-mono font-bold mt-0.5">
-                  6
+                <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs ${
+                  activeTab === 'VIGILANCE' ? 'bg-blue-700 text-white' : 'bg-slate-800 text-slate-400'
+                }`}>
+                  <ShieldAlert className="w-3.5 h-3.5" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-xs leading-tight">Vigilance &amp; Drift Monitor</div>
+                  <div className="font-semibold text-xs leading-tight">Vigilance &amp; Ledger</div>
                   <div className="text-[10px] text-slate-400 font-normal truncate">Audit, Alerts &amp; SAP Sync</div>
                 </div>
-                {!isTabPermitted('VIGILANCE') && <Lock className="w-3 h-3 text-slate-600 mt-1" />}
+                {!isTabPermitted('VIGILANCE') && <Lock className="w-3 h-3 text-slate-600 ml-auto" />}
               </button>
 
-              {/* [7] Legacy Migration */}
+              {/* Legacy Migration */}
               <button
                 onClick={() => isTabPermitted('LEGACY_MIGRATION') && setActiveTab('LEGACY_MIGRATION')}
                 disabled={!isTabPermitted('LEGACY_MIGRATION')}
-                className={`w-full p-2.5 rounded-lg flex items-start gap-3 transition-all cursor-pointer text-left ${
+                className={`w-full p-2.5 rounded-lg flex items-center gap-3 transition-all cursor-pointer text-left ${
                   activeTab === 'LEGACY_MIGRATION'
                     ? 'bg-blue-600 text-white font-bold shadow-xs'
                     : isTabPermitted('LEGACY_MIGRATION')
@@ -533,18 +538,20 @@ export function App() {
                     : 'text-slate-600 opacity-40 cursor-not-allowed'
                 }`}
               >
-                <div className="w-5 h-5 rounded bg-slate-800 text-slate-300 flex items-center justify-center text-[10px] font-mono font-bold mt-0.5">
-                  7
+                <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs ${
+                  activeTab === 'LEGACY_MIGRATION' ? 'bg-blue-700 text-white' : 'bg-slate-800 text-slate-400'
+                }`}>
+                  <UploadCloud className="w-3.5 h-3.5" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold text-xs leading-tight">Legacy Migration</div>
-                  <div className="text-[10px] text-slate-400 font-normal truncate">Pipeline Monitor</div>
+                  <div className="text-[10px] text-slate-400 font-normal truncate">Batch Ingestion Pipeline</div>
                 </div>
-                {!isTabPermitted('LEGACY_MIGRATION') && <Lock className="w-3 h-3 text-slate-600 mt-1" />}
+                {!isTabPermitted('LEGACY_MIGRATION') && <Lock className="w-3 h-3 text-slate-600 ml-auto" />}
               </button>
 
-              {/* SECTION 2B — QUICK ACTIONS (Matching Reference Exactly) */}
-              <div className="pt-4 border-t border-slate-800/80 space-y-1">
+              {/* SECTION 2B — QUICK ACTIONS */}
+              <div className="pt-4 border-t border-slate-800 space-y-1">
                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2 py-1">
                   Quick Actions
                 </div>
@@ -567,13 +574,13 @@ export function App() {
                   <span>My Saved Searches</span>
                 </button>
 
-                {/* 3. View My Organization Data */}
+                {/* 3. View Organization Data */}
                 <button
                   onClick={() => setActiveTab('REGISTRY')}
                   className="w-full text-left px-2.5 py-1.5 rounded text-slate-300 hover:text-white hover:bg-slate-800/60 flex items-center gap-2.5 cursor-pointer text-xs transition-colors"
                 >
                   <Building2 className="w-3.5 h-3.5 text-slate-400" />
-                  <span>View My Organization Data</span>
+                  <span>Organization Master Data</span>
                 </button>
 
                 {/* 4. Download Registry Report */}
@@ -582,7 +589,7 @@ export function App() {
                   className="w-full text-left px-2.5 py-1.5 rounded text-slate-300 hover:text-white hover:bg-slate-800/60 flex items-center gap-2.5 cursor-pointer text-xs transition-colors"
                 >
                   <Download className="w-3.5 h-3.5 text-slate-400" />
-                  <span>Download Registry Report</span>
+                  <span>Export Registry Report</span>
                 </button>
 
                 {/* 5. Data Correction Requests */}
@@ -596,18 +603,18 @@ export function App() {
               </div>
             </div>
 
-            {/* Sidebar Bottom Profile Card matching Reference */}
-            <div className="p-3 border-t border-slate-800 bg-[#090d16] space-y-2">
+            {/* Sidebar Bottom Profile Card */}
+            <div className="p-3 border-t border-slate-800 bg-[#080D18] space-y-2">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs">
-                  MO
+                <div className="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 text-blue-400 flex items-center justify-center font-bold text-xs">
+                  IN
                 </div>
                 <div className="min-w-0">
                   <div className="text-xs font-bold text-white truncate">
                     Ministry of Petroleum &amp; Natural Gas
                   </div>
                   <div className="text-[10px] text-slate-400 truncate">
-                    National Governance Authority
+                    Sovereign Governance Authority
                   </div>
                 </div>
               </div>
@@ -623,7 +630,7 @@ export function App() {
 
                 <button
                   onClick={handleLogout}
-                  className="text-xs text-rose-400 hover:text-rose-300 font-semibold flex items-center gap-1 cursor-pointer"
+                  className="text-xs text-slate-400 hover:text-rose-300 font-semibold flex items-center gap-1 cursor-pointer"
                   title="Sign out of current account"
                 >
                   <LogOut className="w-3 h-3" />

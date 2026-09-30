@@ -11,10 +11,10 @@ export function XAIDiffTable({ diffs, finalConfidence }: XAIDiffTableProps) {
     <div className="w-full bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
       <div className="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
         <span className="text-xs font-semibold text-slate-800 flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
+          <span className="w-2 h-2 rounded-full bg-blue-600"></span>
           Explainable AI (XAI) Attribute Matrix
         </span>
-        <span className="text-xs font-mono font-bold bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 rounded-md">
+        <span className="text-xs font-mono font-bold bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-md">
           CONFIDENCE: {(finalConfidence * 100).toFixed(1)}%
         </span>
       </div>
@@ -65,7 +65,7 @@ export function XAIDiffTable({ diffs, finalConfidence }: XAIDiffTableProps) {
             <span className="w-2 h-2 rounded-full bg-rose-500 inline-block"></span> Spec Variance
           </span>
         </div>
-        <span className="text-slate-600 font-medium">Agent 1 Vector Correlation Active</span>
+        <span className="text-slate-600 font-medium">Semantic Vector Correlation Active</span>
       </div>
     </div>
   );

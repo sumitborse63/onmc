@@ -163,14 +163,14 @@ export function LegacyOCRInspectorView({ currentUser, records = [], onNavigateTa
         <>
           {/* KPI CARDS */}
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
-            <div onClick={() => setViewMode('EXTRACTED_RECORDS')} className="cursor-pointer hover:shadow-md transition-shadow"><KPICard icon={<FileText className="w-4 h-4 text-blue-600" />} label="Total Documents" value={dynamicRecentUploads.length.toString()} sub="CPSE Batches" color="blue" /></div>
-            <div onClick={() => setViewMode('EXTRACTED_RECORDS')} className="cursor-pointer hover:shadow-md transition-shadow"><KPICard icon={<FileUp className="w-4 h-4 text-emerald-600" />} label="Active Batches" value={dynamicRecentUploads.length.toString()} sub="Live connected" color="emerald" subColor="text-emerald-600" /></div>
-            <KPICard icon={<RefreshCw className="w-4 h-4 text-purple-600" />} label="Processing" value="0" sub="Queue clear" color="purple" />
-            <div onClick={() => setViewMode('EXTRACTED_RECORDS')} className="cursor-pointer hover:shadow-md transition-shadow"><KPICard icon={<Scan className="w-4 h-4 text-indigo-600" />} label="Extraction Completed" value={(records?.length || 0).toLocaleString()} sub="Success" color="indigo" /></div>
-            <div onClick={() => setViewMode('EXTRACTED_RECORDS')} className="cursor-pointer hover:shadow-md transition-shadow"><KPICard icon={<AlertTriangle className="w-4 h-4 text-amber-600" />} label="Needs Validation" value={(records?.filter(r => r.mappingStatus !== 'Approved').length || 0).toString()} sub="Low/Med Conf." color="amber" /></div>
-            <KPICard icon={<X className="w-4 h-4 text-rose-600" />} label="Failed" value="0" sub="All Ingested" color="rose" subColor="text-rose-600" />
-            <div onClick={() => setViewMode('EXTRACTED_RECORDS')} className="cursor-pointer hover:shadow-md transition-shadow"><KPICard icon={<Database className="w-4 h-4 text-teal-600" />} label="Records Created" value={(records?.length || 0).toLocaleString()} sub="Database" color="teal" /></div>
-            <KPICard icon={<ArrowRight className="w-4 h-4 text-fuchsia-600" />} label="Sent to Review" value={(records?.filter(r => r.mappingStatus !== 'Approved').length || 0).toString()} sub="Adjudication" color="fuchsia" />
+            <div onClick={() => setViewMode('EXTRACTED_RECORDS')} className="cursor-pointer hover:shadow-xs transition-shadow"><KPICard icon={<FileText className="w-4 h-4 text-blue-600" />} label="Total Documents" value={dynamicRecentUploads.length.toString()} sub="CPSE Batches" status="blue" /></div>
+            <div onClick={() => setViewMode('EXTRACTED_RECORDS')} className="cursor-pointer hover:shadow-xs transition-shadow"><KPICard icon={<FileUp className="w-4 h-4 text-emerald-600" />} label="Active Batches" value={dynamicRecentUploads.length.toString()} sub="Live connected" status="emerald" subColor="text-emerald-600" /></div>
+            <KPICard icon={<RefreshCw className="w-4 h-4 text-slate-600" />} label="Processing" value="0" sub="Queue clear" status="default" />
+            <div onClick={() => setViewMode('EXTRACTED_RECORDS')} className="cursor-pointer hover:shadow-xs transition-shadow"><KPICard icon={<Scan className="w-4 h-4 text-blue-600" />} label="Extraction Completed" value={(records?.length || 0).toLocaleString()} sub="Verified parse" status="blue" /></div>
+            <div onClick={() => setViewMode('EXTRACTED_RECORDS')} className="cursor-pointer hover:shadow-xs transition-shadow"><KPICard icon={<AlertTriangle className="w-4 h-4 text-amber-600" />} label="Needs Validation" value={(records?.filter(r => r.mappingStatus !== 'Approved').length || 0).toString()} sub="Adjudication" status="amber" subColor="text-amber-600" /></div>
+            <KPICard icon={<X className="w-4 h-4 text-slate-400" />} label="Failed" value="0" sub="Zero failures" status="default" />
+            <div onClick={() => setViewMode('EXTRACTED_RECORDS')} className="cursor-pointer hover:shadow-xs transition-shadow"><KPICard icon={<Database className="w-4 h-4 text-blue-600" />} label="Records Created" value={(records?.length || 0).toLocaleString()} sub="Federated DB" status="blue" /></div>
+            <div onClick={() => setViewMode('EXTRACTED_RECORDS')} className="cursor-pointer hover:shadow-xs transition-shadow"><KPICard icon={<ArrowRight className="w-4 h-4 text-blue-600" />} label="Sent to Review" value={(records?.filter(r => r.mappingStatus !== 'Approved').length || 0).toString()} sub="Review Queue" status="blue" /></div>
           </div>
 
           {/* MIDDLE ROW */}
@@ -216,7 +216,7 @@ export function LegacyOCRInspectorView({ currentUser, records = [], onNavigateTa
                   <div className="w-full flex flex-col h-full bg-white border border-slate-200 rounded-lg p-4 shadow-sm" onClick={(e) => e.stopPropagation()}>
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center border border-indigo-100">
+                        <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center border border-blue-100">
                           <FileText className="w-5 h-5"/>
                         </div>
                         <div className="text-left">
@@ -281,15 +281,15 @@ export function LegacyOCRInspectorView({ currentUser, records = [], onNavigateTa
                   <div className="grid grid-cols-2 gap-4 text-xs mb-6">
                     <div>
                       <div className="text-slate-500 mb-0.5">Uploaded by</div>
-                      <div className="font-bold text-slate-800">{currentUser?.name || 'CPSE Ingestion Agent'}</div>
+                      <div className="font-bold text-slate-800">{currentUser?.name || 'CPSE Ingestion Officer'}</div>
                     </div>
                     <div>
                       <div className="text-slate-500 mb-0.5">CPSE</div>
-                      <div className="font-bold text-slate-800">{currentUser?.cpse || 'National Cluster'}</div>
+                      <div className="font-bold text-slate-800">{currentUser?.cpse || 'Federated Cluster'}</div>
                     </div>
                     <div className="col-span-2">
                       <div className="text-slate-500 mb-0.5">Dataset Ingestion</div>
-                      <div className="font-bold text-slate-800">SIH Synthetic Material Master Catalog</div>
+                      <div className="font-bold text-slate-800">Federated Material Master Catalog</div>
                     </div>
                   </div>
 
@@ -393,22 +393,18 @@ export function LegacyOCRInspectorView({ currentUser, records = [], onNavigateTa
                 <h3 className="text-sm font-bold text-slate-800 mb-4">Quick Actions</h3>
                 <div className="grid grid-cols-2 gap-3">
                   <div onClick={() => setViewMode('EXTRACTED_RECORDS')} className="cursor-pointer">
-                    <QuickActionButton icon={<AlertTriangle className="w-4 h-4 text-amber-600"/>} title="Low Confidence Queue" sub="214 Records" color="amber" />
+                    <QuickActionButton icon={<AlertTriangle className="w-4 h-4 text-amber-600"/>} title="Pending Validation" sub="Low Confidence Items" variant="warning" />
                   </div>
                   <div 
                     onClick={() => setViewMode('EXTRACTED_RECORDS')}
-                    className="bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg p-3 cursor-pointer transition-colors flex flex-col justify-center h-full group"
+                    className="cursor-pointer"
                   >
-                    <div className="flex items-start gap-2 mb-1">
-                      <Database className="w-4 h-4 text-blue-700 mt-0.5" />
-                      <span className="text-xs font-bold text-blue-900 leading-tight group-hover:underline">View Recently Added Data</span>
-                    </div>
-                    <span className="text-[10px] text-blue-700 ml-6">842 Records</span>
+                    <QuickActionButton icon={<Database className="w-4 h-4 text-blue-600"/>} title="Recent Ingested Data" sub="Active Records Feed" variant="primary" />
                   </div>
-                  <QuickActionButton icon={<ArrowUpRight className="w-4 h-4 text-emerald-600"/>} title="Send to Reviewer Portal" sub="56 Records Ready" color="emerald" />
-                  <QuickActionButton icon={<RefreshCw className="w-4 h-4 text-rose-600"/>} title="Reprocess Failed Files" sub="18 Files" color="rose" />
-                  <QuickActionButton icon={<LayersIcon className="w-4 h-4 text-indigo-600"/>} title="View Batches" sub="All Ingestion Batches" color="indigo" />
-                  <QuickActionButton icon={<History className="w-4 h-4 text-purple-600"/>} title="Audit Trail" sub="View All Activities" color="purple" />
+                  <QuickActionButton icon={<ArrowUpRight className="w-4 h-4 text-blue-600"/>} title="Reviewer Portal" sub="Route to Adjudication" variant="neutral" />
+                  <QuickActionButton icon={<RefreshCw className="w-4 h-4 text-slate-600"/>} title="Batch Diagnostics" sub="Verify Integrations" variant="neutral" />
+                  <QuickActionButton icon={<LayersIcon className="w-4 h-4 text-blue-600"/>} title="Ingestion Batches" sub="All Federated Batches" variant="neutral" />
+                  <QuickActionButton icon={<History className="w-4 h-4 text-slate-600"/>} title="Audit Trail" sub="Pipeline Activity Logs" variant="neutral" />
                 </div>
               </div>
 
@@ -416,10 +412,10 @@ export function LegacyOCRInspectorView({ currentUser, records = [], onNavigateTa
               <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
                 <h3 className="text-sm font-bold text-slate-800 mb-3">Supported File Types</h3>
                 <div className="flex gap-4 mb-3 justify-between">
-                  <TypeBadge icon={<ImageIcon className="w-4 h-4 text-blue-600"/>} title="PNG" sub="Images" bg="bg-blue-50" />
-                  <TypeBadge icon={<ImageIcon className="w-4 h-4 text-purple-600"/>} title="JPG / JPEG" sub="Images" bg="bg-purple-50" />
-                  <TypeBadge icon={<FileText className="w-4 h-4 text-rose-600"/>} title="PDF" sub="Documents" bg="bg-rose-50" />
-                  <TypeBadge icon={<Table className="w-4 h-4 text-emerald-600"/>} title="XLS / XLSX" sub="Spreadsheets" bg="bg-emerald-50" />
+                  <TypeBadge icon={<ImageIcon className="w-4 h-4 text-blue-600"/>} title="PNG" sub="Raster Images" />
+                  <TypeBadge icon={<ImageIcon className="w-4 h-4 text-blue-600"/>} title="JPG / JPEG" sub="Scanned Specs" />
+                  <TypeBadge icon={<FileText className="w-4 h-4 text-blue-600"/>} title="PDF" sub="Tender Documents" />
+                  <TypeBadge icon={<Table className="w-4 h-4 text-blue-600"/>} title="XLS / XLSX" sub="Catalog Master" />
                 </div>
                 <p className="text-[10px] text-slate-500 mb-2">Handwritten documents, scanned documents, multi-page PDFs and spreadsheets are supported.</p>
                 <button className="text-[10px] font-bold text-blue-600 hover:underline flex items-center gap-1">View Supported Formats <ArrowRight className="w-3 h-3"/></button>
@@ -678,27 +674,25 @@ function LayersIcon(props: any) {
   );
 }
 
-function KPICard({ icon, label, value, sub, color, subColor }: any) {
-  const bgColors = {
-    blue: 'bg-blue-50 text-blue-600 border-blue-100',
-    emerald: 'bg-emerald-50 text-emerald-600 border-emerald-100',
-    purple: 'bg-purple-50 text-purple-600 border-purple-100',
-    indigo: 'bg-indigo-50 text-indigo-600 border-indigo-100',
-    amber: 'bg-amber-50 text-amber-600 border-amber-100',
-    rose: 'bg-rose-50 text-rose-600 border-rose-100',
-    teal: 'bg-teal-50 text-teal-600 border-teal-100',
-    fuchsia: 'bg-fuchsia-50 text-fuchsia-600 border-fuchsia-100',
+function KPICard({ icon, label, value, sub, status = 'default', subColor }: any) {
+  const iconVariants: Record<string, string> = {
+    default: 'bg-slate-100 text-slate-700 border-slate-200',
+    blue: 'bg-blue-50 text-blue-700 border-blue-200',
+    emerald: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    amber: 'bg-amber-50 text-amber-700 border-amber-200',
+    rose: 'bg-rose-50 text-rose-700 border-rose-200',
   };
+  const iconStyle = iconVariants[status] || iconVariants.default;
   
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-3 shadow-sm flex flex-col justify-between h-full">
-      <div className={`w-7 h-7 rounded flex items-center justify-center border ${bgColors[color as keyof typeof bgColors]} mb-3`}>
+    <div className="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs hover:border-blue-300 transition-all flex flex-col justify-between h-full">
+      <div className={`w-7 h-7 rounded-lg flex items-center justify-center border ${iconStyle} mb-3`}>
         {icon}
       </div>
       <div>
-        <div className="text-[10px] font-bold text-slate-500 mb-0.5 truncate" title={label}>{label}</div>
+        <div className="text-[10px] font-semibold text-slate-500 mb-0.5 truncate" title={label}>{label}</div>
         <div className="text-xl font-bold text-slate-900 leading-tight">{value}</div>
-        <div className={`text-[9px] font-bold mt-1 ${subColor || 'text-slate-400'}`}>{sub}</div>
+        <div className={`text-[9px] font-medium mt-1 ${subColor || 'text-slate-400'}`}>{sub}</div>
       </div>
     </div>
   );
@@ -724,29 +718,28 @@ function PipelineStep({ num, label, status, isLast }: { num: number, label: stri
   );
 }
 
-function QuickActionButton({ icon, title, sub, color }: any) {
-  const bgColors = {
-    amber: 'bg-amber-50 hover:bg-amber-100 border-amber-200',
-    emerald: 'bg-emerald-50 hover:bg-emerald-100 border-emerald-200',
-    rose: 'bg-rose-50 hover:bg-rose-100 border-rose-200',
-    indigo: 'bg-indigo-50 hover:bg-indigo-100 border-indigo-200',
-    purple: 'bg-purple-50 hover:bg-purple-100 border-purple-200',
+function QuickActionButton({ icon, title, sub, variant = 'neutral' }: any) {
+  const variantStyles: Record<string, string> = {
+    neutral: 'bg-slate-50 hover:bg-slate-100/80 border-slate-200 text-slate-800',
+    primary: 'bg-blue-50/70 hover:bg-blue-100/80 border-blue-200 text-blue-900',
+    warning: 'bg-amber-50/70 hover:bg-amber-100/80 border-amber-200 text-amber-900',
+    success: 'bg-emerald-50/70 hover:bg-emerald-100/80 border-emerald-200 text-emerald-900',
   };
   return (
-    <div className={`${bgColors[color as keyof typeof bgColors]} border rounded-lg p-3 cursor-pointer transition-colors flex flex-col justify-center h-full group`}>
+    <div className={`${variantStyles[variant] || variantStyles.neutral} border rounded-lg p-3 cursor-pointer transition-colors flex flex-col justify-center h-full group`}>
       <div className="flex items-start gap-2 mb-1">
         <div className="mt-0.5 shrink-0">{icon}</div>
-        <span className="text-xs font-bold text-slate-800 leading-tight group-hover:underline">{title}</span>
+        <span className="text-xs font-semibold leading-tight group-hover:underline">{title}</span>
       </div>
       <span className="text-[10px] text-slate-500 ml-6">{sub}</span>
     </div>
   );
 }
 
-function TypeBadge({ icon, title, sub, bg }: any) {
+function TypeBadge({ icon, title, sub }: any) {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center gap-1 p-2">
-      <div className={`${bg} w-8 h-8 rounded flex items-center justify-center mb-1`}>
+    <div className="flex-1 flex flex-col items-center justify-center gap-1 p-2 bg-slate-50 border border-slate-200/70 rounded-lg">
+      <div className="w-7 h-7 rounded-md bg-white border border-slate-200 flex items-center justify-center mb-0.5 shadow-2xs">
         {icon}
       </div>
       <div className="text-[10px] font-bold text-slate-800">{title}</div>

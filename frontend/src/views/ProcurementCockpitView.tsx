@@ -247,20 +247,20 @@ export function ProcurementCockpitView({ records = [], currentUser }: Procuremen
       {/* Top Header Banner */}
       <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-700 shadow-2xs">
+          <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-700 shadow-2xs">
             <TrendingUp className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-base font-bold text-slate-900 font-sans tracking-tight">
-                Strategic Sourcing &amp; Demand Aggregator Cockpit (Agent 3)
+                Strategic Sourcing &amp; Demand Aggregator Cockpit
               </h2>
-              <span className="text-[10px] font-mono bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">
+              <span className="text-[10px] font-mono bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full font-bold">
                 {currentUser?.cpse || 'PROCUREMENT'} OVERSIGHT
               </span>
             </div>
-            <p className="text-xs text-slate-500 font-mono mt-0.5">
-              Econometric Price Dispersion Modeling, Voice Search &amp; Statutory 25% MSE Quota Engine
+            <p className="text-xs text-slate-500 mt-0.5">
+              Econometric price dispersion modeling, volume elasticity pooling &amp; statutory MSE quota engine
             </p>
           </div>
         </div>
@@ -271,7 +271,7 @@ export function ProcurementCockpitView({ records = [], currentUser }: Procuremen
             onClick={() => setSubTab('SOURCING_SIMULATOR')}
             className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
               subTab === 'SOURCING_SIMULATOR'
-                ? 'bg-white text-emerald-700 shadow-xs font-bold'
+                ? 'bg-white text-blue-700 shadow-xs font-bold'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -284,20 +284,20 @@ export function ProcurementCockpitView({ records = [], currentUser }: Procuremen
             onClick={() => setSubTab('VOICE_SEARCH')}
             className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
               subTab === 'VOICE_SEARCH'
-                ? 'bg-white text-emerald-700 shadow-xs font-bold'
+                ? 'bg-white text-blue-700 shadow-xs font-bold'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             <span className="flex items-center gap-1.5">
               <Mic className="w-3.5 h-3.5" />
-              Voice-Based Material Search
+              Voice-Based Search
             </span>
           </button>
           <button
             onClick={() => setSubTab('PRICE_DISPERSION')}
             className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
               subTab === 'PRICE_DISPERSION'
-                ? 'bg-white text-emerald-700 shadow-xs font-bold'
+                ? 'bg-white text-blue-700 shadow-xs font-bold'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -309,10 +309,10 @@ export function ProcurementCockpitView({ records = [], currentUser }: Procuremen
           <div className="flex-1"></div>
           <button
             onClick={() => setShowRequestModal(true)}
-            className="bg-amber-100 hover:bg-amber-200 text-amber-800 border border-amber-300 px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-2xs font-bold transition-colors ml-auto mr-1"
+            className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-2xs font-semibold transition-colors ml-auto mr-1 cursor-pointer"
           >
-            <FilePlus className="w-3.5 h-3.5" />
-            Request Missing Item / New Master
+            <FilePlus className="w-3.5 h-3.5 text-blue-600" />
+            Request New Master Item
           </button>
         </div>
       </div>

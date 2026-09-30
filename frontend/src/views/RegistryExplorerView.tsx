@@ -448,11 +448,11 @@ export function RegistryExplorerView({
             </h1>
             <ShieldCheck className="w-5 h-5 text-blue-600" />
             <span className="text-[10px] font-mono font-bold bg-blue-50 text-blue-700 px-2 py-0.5 rounded border border-blue-200">
-              AUTHORITATIVE GOLDEN MASTER
+              CANONICAL GOLDEN MASTER
             </span>
           </div>
           <p className="text-xs text-slate-500 font-normal mt-0.5">
-            Authoritative National Material Master &bull; Standardized &bull; Federated &bull; Trusted
+            Federated National Material Master Catalog across participating CPSE enterprises
           </p>
         </div>
 
@@ -463,21 +463,21 @@ export function RegistryExplorerView({
             className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-3.5 py-2 text-xs font-semibold rounded-lg flex items-center gap-2 cursor-pointer shadow-2xs transition-all"
           >
             <BarChart3 className="w-3.5 h-3.5 text-blue-600" />
-            <span>Registry Governance Dashboard</span>
+            <span>Governance Analytics</span>
           </button>
 
           <button
             onClick={() => setShowChangeRequestModal(true)}
             className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-3.5 py-2 text-xs font-semibold rounded-lg flex items-center gap-2 cursor-pointer shadow-2xs transition-all"
           >
-            <FileEdit className="w-3.5 h-3.5 text-amber-600" />
+            <FileEdit className="w-3.5 h-3.5 text-slate-600" />
             <span>Request Correction</span>
           </button>
 
           <button
             onClick={() => window.open(getExportCSVUrl(), '_blank')}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-xs font-bold rounded-lg flex items-center gap-2 shadow-xs cursor-pointer transition-all"
-            title="Download authoritative CSV registry report with RBAC verification"
+            title="Download authoritative CSV registry report"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Export Registry Report</span>
@@ -499,70 +499,70 @@ export function RegistryExplorerView({
           <div className="text-2xl font-bold text-slate-900 tracking-tight font-sans">
             {masters.length.toLocaleString()}
           </div>
-          <div className="text-[10px] text-slate-400 font-medium">Approved Golden Masters</div>
+          <div className="text-[11px] text-slate-500">Approved Golden Masters</div>
         </div>
 
         {/* KPI 2: CPSE Material Mappings */}
         <div className="bg-white border border-slate-200/90 p-4 rounded-xl shadow-2xs space-y-1.5">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold text-slate-500">CPSE Material Mappings</span>
-            <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
               <Building2 className="w-4 h-4" />
             </div>
           </div>
           <div className="text-2xl font-bold text-slate-900 tracking-tight font-sans">
             {records.length.toLocaleString()}
           </div>
-          <div className="text-[10px] text-slate-400 font-medium">Mapped CPSE Master SKUs</div>
+          <div className="text-[11px] text-slate-500">Mapped CPSE Master SKUs</div>
         </div>
 
         {/* KPI 3: Standardized Materials */}
         <div className="bg-white border border-slate-200/90 p-4 rounded-xl shadow-2xs space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-slate-500">Standardized Materials</span>
-            <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+            <span className="text-[11px] font-semibold text-slate-500">Standardization Rate</span>
+            <div className="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
               <Sparkles className="w-4 h-4" />
             </div>
           </div>
           <div className="text-2xl font-bold text-slate-900 tracking-tight font-sans">
             {records.length > 0 ? `${((records.filter(r => r.extractedStandard || r.extractedGrade).length / records.length) * 100).toFixed(1)}%` : '100%'}
           </div>
-          <div className="text-[10px] text-slate-400 font-medium">
+          <div className="text-[11px] text-slate-500">
             {records.filter(r => r.extractedStandard || r.extractedGrade).length} with Canonical Specs
           </div>
         </div>
 
-        {/* KPI 4: Pending Master Review (Clickable to Dashboard 1 Reviewer Portal) */}
+        {/* KPI 4: Pending Master Review */}
         <div
           onClick={() => onNavigateTab && onNavigateTab('REVIEWER')}
-          className="bg-white border border-slate-200/90 hover:border-purple-300 p-4 rounded-xl shadow-2xs space-y-1.5 cursor-pointer transition-all group"
+          className="bg-white border border-slate-200/90 hover:border-blue-400 p-4 rounded-xl shadow-2xs space-y-1.5 cursor-pointer transition-all group"
           title="Click to view pending items in Reviewer Portal"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-slate-500 group-hover:text-purple-700">Pending Master Review</span>
-            <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+            <span className="text-[11px] font-semibold text-slate-500 group-hover:text-blue-700">Pending Review</span>
+            <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center">
               <Clock className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-bold text-slate-900 tracking-tight group-hover:text-purple-700 flex items-center justify-between font-sans">
+          <div className="text-2xl font-bold text-slate-900 tracking-tight group-hover:text-blue-700 flex items-center justify-between font-sans">
             <span>{records.filter(r => r.mappingStatus !== 'Approved').length || 1}</span>
-            <ArrowUpRight className="w-4 h-4 text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
           </div>
-          <div className="text-[10px] text-slate-400 font-medium">Awaiting HITL Approval &rarr;</div>
+          <div className="text-[11px] text-slate-500">Awaiting Adjudication &rarr;</div>
         </div>
 
         {/* KPI 5: Active CPSEs */}
         <div className="bg-white border border-slate-200/90 p-4 rounded-xl shadow-2xs space-y-1.5 col-span-2 sm:col-span-1">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold text-slate-500">Active CPSEs</span>
-            <div className="w-7 h-7 rounded-lg bg-cyan-50 text-cyan-600 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
               <Shield className="w-4 h-4" />
             </div>
           </div>
           <div className="text-2xl font-bold text-slate-900 tracking-tight font-sans">
             {cpseOptions.filter(c => c !== 'ALL').length || 6}
           </div>
-          <div className="text-[10px] text-slate-400 font-medium truncate">
+          <div className="text-[11px] text-slate-500 truncate">
             {cpseOptions.filter(c => c !== 'ALL').join(', ') || 'IOCL, CPCL, ONGC, BPCL, HPCL, SAIL'}
           </div>
         </div>

@@ -291,7 +291,7 @@ export function ReviewerPortalView({
         </div>
       )}
 
-      {/* TOP BANNER — MATCHING SHRI AMITABH KANT REFERENCE */}
+      {/* TOP BANNER */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5 flex-wrap">
@@ -300,11 +300,11 @@ export function ReviewerPortalView({
             </h1>
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
               <ShieldCheck className="w-3.5 h-3.5" />
-              LEVEL 3 HITL GATEWAY • ISO 29148 VERIFIED
+              Verification Gateway Active
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Authoritative Technical Adjudication • 5-Axis Attribute Affirmation • Hard-Blocking &amp; Conflict Resolution
+            Technical equivalence verification, attribute reconciliation, and ERP master synchronization
           </p>
         </div>
 
@@ -322,7 +322,7 @@ export function ReviewerPortalView({
             onClick={() => setShowAuditModal(true)}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 shadow-2xs cursor-pointer transition-colors"
           >
-            <History className="w-4 h-4 text-purple-600" />
+            <History className="w-4 h-4 text-slate-600" />
             Review Audit Trail
           </button>
 
@@ -339,7 +339,7 @@ export function ReviewerPortalView({
 
       {/* 5-CARD KPI METRIC BAR */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5">
-        <div className="bg-white border border-slate-200/80 rounded-xl p-4 shadow-2xs flex flex-col justify-between">
+        <div className="bg-white border border-slate-200/90 rounded-xl p-4 shadow-2xs flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500">Active Review Queue</span>
             <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center">
@@ -347,60 +347,68 @@ export function ReviewerPortalView({
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-black text-slate-900 tracking-tight">{dynamicCases.length} Cases</div>
-            <div className="text-[11px] text-slate-500 mt-0.5">Awaiting Engineering Affirmation</div>
+            <div className="text-2xl font-bold text-slate-900 tracking-tight font-sans">{dynamicCases.length} Cases</div>
+            <div className="text-[11px] text-slate-500 mt-0.5">Awaiting Technical Affirmation</div>
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200/80 rounded-xl p-4 shadow-2xs flex flex-col justify-between">
+        <div className="bg-white border border-slate-200/90 rounded-xl p-4 shadow-2xs flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Approved &amp; Unified</span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center">
+            <span className="text-xs font-semibold text-slate-500">Harmonized Items</span>
+            <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-black text-emerald-600 tracking-tight">1,420 Items</div>
-            <div className="text-[11px] text-emerald-600 font-semibold mt-0.5">Green Tier ≥95% System Matches</div>
+            <div className="text-2xl font-bold text-slate-900 tracking-tight font-sans">
+              {(records.filter(r => r.status === 'SYNCED' || r.mappingStatus === 'Approved').length || records.length).toLocaleString()} Items
+            </div>
+            <div className="text-[11px] text-slate-500 mt-0.5">Verified Master Records</div>
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200/80 rounded-xl p-4 shadow-2xs flex flex-col justify-between">
+        <div className="bg-white border border-slate-200/90 rounded-xl p-4 shadow-2xs flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Equivalence Accuracy</span>
-            <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center">
+            <span className="text-xs font-semibold text-slate-500">Confidence Score</span>
+            <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
               <Sparkles className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-black text-slate-900 tracking-tight">98.6%</div>
-            <div className="text-[11px] text-slate-500 mt-0.5">Across ASME / ASTM / API standards</div>
+            <div className="text-2xl font-bold text-slate-900 tracking-tight font-sans">
+              {records.length > 0 ? `${Math.round(records.reduce((acc, r) => acc + (Number(r.attributeSimilarity) || 0.95), 0) / records.length * 100)}%` : '98%'}
+            </div>
+            <div className="text-[11px] text-slate-500 mt-0.5">Attribute Match Fidelity</div>
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200/80 rounded-xl p-4 shadow-2xs flex flex-col justify-between">
+        <div className="bg-white border border-slate-200/90 rounded-xl p-4 shadow-2xs flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Hard-Blocked Conflicts</span>
-            <div className="w-8 h-8 rounded-lg bg-rose-50 text-rose-700 flex items-center justify-center">
+            <span className="text-xs font-semibold text-slate-500">Flagged For Review</span>
+            <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center">
               <AlertTriangle className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-black text-rose-600 tracking-tight">18 Conflicts</div>
-            <div className="text-[11px] text-rose-700 font-semibold mt-0.5">Grade / rating incompatibilities</div>
+            <div className="text-2xl font-bold text-slate-900 tracking-tight font-sans">
+              {records.filter(r => r.mappingStatus !== 'Approved' || ((r.attributeSimilarity || 1) < 0.8)).length} Items
+            </div>
+            <div className="text-[11px] text-slate-500 mt-0.5">Tolerance &amp; rating checks</div>
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200/80 rounded-xl p-4 shadow-2xs flex flex-col justify-between">
+        <div className="bg-white border border-slate-200/90 rounded-xl p-4 shadow-2xs flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Approved National Masters</span>
-            <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center">
+            <span className="text-xs font-semibold text-slate-500">Approved Masters</span>
+            <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
               <ShieldCheck className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-black text-slate-900 tracking-tight">80 Masters</div>
-            <div className="text-[11px] text-slate-500 mt-0.5">Enforced across 7 CPSE ERPs</div>
+            <div className="text-2xl font-bold text-slate-900 tracking-tight font-sans">
+              {new Set(records.map(r => r.groundTruthNationalCode).filter(Boolean)).size || 80} Masters
+            </div>
+            <div className="text-[11px] text-slate-500 mt-0.5">Synchronized with ERPs</div>
           </div>
         </div>
       </div>
@@ -808,7 +816,7 @@ export function ReviewerPortalView({
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
             <div className="flex justify-between items-center border-b border-slate-100 pb-3">
               <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2">
-                <History className="w-4 h-4 text-purple-600" />
+                <History className="w-4 h-4 text-blue-600" />
                 Engineering Adjudication Audit Log
               </h3>
               <button onClick={() => setShowAuditModal(false)} className="text-slate-400 hover:text-slate-600">

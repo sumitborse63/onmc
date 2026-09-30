@@ -117,9 +117,9 @@ export function DuplicateClusterView({ currentUser }: DuplicateClusterProps) {
       <div className="flex gap-2 text-xs font-semibold">
         <button
           onClick={() => setFilterType('ALL')}
-          className={`px-3 py-1.5 rounded-lg cursor-pointer transition-all ${
+          className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
             filterType === 'ALL'
-              ? 'bg-slate-900 text-white shadow-xs'
+              ? 'bg-blue-600 text-white shadow-xs'
               : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
           }`}
         >
@@ -127,9 +127,9 @@ export function DuplicateClusterView({ currentUser }: DuplicateClusterProps) {
         </button>
         <button
           onClick={() => setFilterType('EXACT_DUPLICATE')}
-          className={`px-3 py-1.5 rounded-lg cursor-pointer transition-all ${
+          className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
             filterType === 'EXACT_DUPLICATE'
-              ? 'bg-rose-600 text-white shadow-xs'
+              ? 'bg-blue-600 text-white shadow-xs'
               : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
           }`}
         >
@@ -137,9 +137,9 @@ export function DuplicateClusterView({ currentUser }: DuplicateClusterProps) {
         </button>
         <button
           onClick={() => setFilterType('NEAR_DUPLICATE')}
-          className={`px-3 py-1.5 rounded-lg cursor-pointer transition-all ${
+          className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
             filterType === 'NEAR_DUPLICATE'
-              ? 'bg-amber-600 text-white shadow-xs'
+              ? 'bg-blue-600 text-white shadow-xs'
               : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
           }`}
         >
@@ -147,9 +147,9 @@ export function DuplicateClusterView({ currentUser }: DuplicateClusterProps) {
         </button>
         <button
           onClick={() => setFilterType('FUNCTIONALLY_EQUIVALENT')}
-          className={`px-3 py-1.5 rounded-lg cursor-pointer transition-all ${
+          className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
             filterType === 'FUNCTIONALLY_EQUIVALENT'
-              ? 'bg-indigo-600 text-white shadow-xs'
+              ? 'bg-blue-600 text-white shadow-xs'
               : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
           }`}
         >
@@ -167,18 +167,18 @@ export function DuplicateClusterView({ currentUser }: DuplicateClusterProps) {
               onClick={() => setSelectedCluster(cluster)}
               className={`p-4 rounded-xl border transition-all cursor-pointer ${
                 selectedCluster?.clusterId === cluster.clusterId
-                  ? 'bg-rose-50/40 border-rose-400 shadow-xs ring-1 ring-rose-400'
+                  ? 'bg-blue-50/50 border-blue-400 shadow-xs ring-1 ring-blue-400'
                   : 'bg-white border-slate-200 hover:border-slate-300'
               }`}
             >
               <div className="flex justify-between items-center text-xs">
                 <span
-                  className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono ${
+                  className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono border ${
                     cluster.classification === 'EXACT_DUPLICATE'
-                      ? 'bg-rose-100 text-rose-700'
+                      ? 'bg-rose-50 text-rose-700 border-rose-200'
                       : cluster.classification === 'NEAR_DUPLICATE'
-                      ? 'bg-amber-100 text-amber-700'
-                      : 'bg-indigo-100 text-indigo-700'
+                      ? 'bg-amber-50 text-amber-700 border-amber-200'
+                      : 'bg-blue-50 text-blue-700 border-blue-200'
                   }`}
                 >
                   {cluster.classification.replace('_', ' ')}
@@ -281,7 +281,7 @@ export function DuplicateClusterView({ currentUser }: DuplicateClusterProps) {
                 )}
               </div>
               <p className="text-slate-300 text-[11px] leading-relaxed">
-                Consolidate all {selectedCluster.totalDuplicatedSKUs} legacy material master records under Common National Code <code className="text-rose-400 font-bold">{selectedCluster.primaryNationalCode}</code>. Initiate inter-refinery safety stock pooling across {selectedCluster.participatingCPSEs.join(', ')} to release working capital.
+                Consolidate all {selectedCluster.totalDuplicatedSKUs} legacy material master records under Common National Code <code className="text-blue-300 font-mono font-bold">{selectedCluster.primaryNationalCode}</code>. Initiate inter-refinery safety stock pooling across {selectedCluster.participatingCPSEs.join(', ')} to release working capital.
               </p>
             </div>
           </div>

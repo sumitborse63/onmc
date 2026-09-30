@@ -128,15 +128,15 @@ export function VigilanceDashboardView({ currentUser }: VigilanceDashboardProps)
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-bold text-slate-900 tracking-tight">
-              IT &amp; SAP NetWeaver ERP Vigilance &amp; Compliance Cockpit (Agent 5)
+              ERP Vigilance &amp; Ledger Compliance Cockpit
             </h1>
-            <ShieldAlert className="w-5 h-5 text-rose-600" />
-            <span className="text-[10px] font-mono bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 rounded-md font-bold">
-              SAP BASIS LISTENER ACTIVE
+            <ShieldAlert className="w-5 h-5 text-blue-600" />
+            <span className="text-[10px] font-mono bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-md font-bold">
+              ERP LISTENER ACTIVE
             </span>
           </div>
           <p className="text-xs text-slate-500 font-normal mt-0.5">
-            Autonomous Real-Time NetWeaver Delta Listener, Rogue Edit Reversions &amp; Cryptographic SHA-256 Ledger
+            Real-Time NetWeaver Delta Listener, Audit Drift Logging &amp; Cryptographic SHA-256 Ledger
           </p>
         </div>
 

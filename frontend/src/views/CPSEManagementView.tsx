@@ -94,7 +94,7 @@ export function CPSEManagementView({ records, currentUser }: CPSEManagementProps
       const data = await runOCRSpellcheck(ocrInputText);
       if (data) {
         setOcrResult(data);
-        setOcrStatusMessage('Agent 2 Multimodal LayoutLMv3 & Lexicon Disambiguation Completed');
+        setOcrStatusMessage('Multimodal LayoutLMv3 & Lexicon Disambiguation Completed');
         setTimeout(() => setOcrStatusMessage(null), 3500);
       }
     } catch (err) {
@@ -287,7 +287,7 @@ export function CPSEManagementView({ records, currentUser }: CPSEManagementProps
                   {/* Extracted Normalized Attribute Grid */}
                   <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 space-y-2">
                     <span className="text-xs font-bold text-slate-900 uppercase font-mono block">
-                      Normalized Technical Attributes (Agent 1 AI Resolution):
+                      Normalized Technical Attributes:
                     </span>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
                       <div className="bg-white p-2 rounded-lg border border-slate-200">
@@ -364,7 +364,7 @@ export function CPSEManagementView({ records, currentUser }: CPSEManagementProps
                 className="btn-stitch bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-xs cursor-pointer disabled:opacity-50"
               >
                 {isOcrProcessing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />}
-                Execute Agent 2 OCR
+                Execute OCR Extraction
               </button>
             </div>
           </div>
